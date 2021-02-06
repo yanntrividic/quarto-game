@@ -23,5 +23,5 @@ class Size(Enum):
 
 
 class Hole(Enum):
-    WITH = "w hole"
+    WITH = "w/ hole"
     WITHOUT = "w/o hole"
