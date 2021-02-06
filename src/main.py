@@ -9,9 +9,10 @@ from quarto.board import Board
 from quarto.constants import HEIGHT, WIDTH
 
 pg.init()
-#  window_logo = pg.image.load('favicon.png')
+# window_logo = pg.image.load('favicon.png')
 # pg.display.set_icon(window_logo)
 
+# TODO: eventually, we'll have to change the width and height to make it fit our TWO boards
 win = pg.display.set_mode((WIDTH, HEIGHT))  # (width, height)
 fps = 60
 
