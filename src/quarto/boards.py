@@ -10,9 +10,9 @@ import pygame as pg
 from quarto.pieces.piece import Piece
 from quarto.pieces.types import *
 
-from .constants import (GREEN, DGREEN, LGREEN, SQUARE_SIZE,
-                        GCOLS, GROWS, SCOLS, SROWS,
-                        GXOFFSET, GYOFFSET, SXOFFSET, SYOFFSET)
+from .constants import (GREEN, DGREEN, LGREEN, DBROWN,
+                        SQUARE_SIZE, GCOLS, GROWS, SCOLS, SROWS,
+                        GXOFFSET, GYOFFSET, SXOFFSET, SYOFFSET, BOARDOUTLINE)
 
 
 class Board:
@@ -30,6 +30,9 @@ class Board:
 class GameBoard(Board):
 
     def draw_cells(self, win):
+        rect = (GXOFFSET - BOARDOUTLINE, GYOFFSET - BOARDOUTLINE,
+                SQUARE_SIZE * GCOLS + 2 * BOARDOUTLINE, SQUARE_SIZE * GROWS + 2 * BOARDOUTLINE)
+        pg.draw.rect(win, DBROWN, rect)
         colors = itertools.cycle((LGREEN, GREEN))
         for x in range(GCOLS):
             for y in range(GROWS):
@@ -44,6 +47,9 @@ class GameBoard(Board):
 class StorageBoard(Board):
 
     def draw_cells(self, win):
+        rect = (SXOFFSET - 10, SYOFFSET - 10,
+                SQUARE_SIZE * SCOLS + 20, SQUARE_SIZE * SROWS + 20)
+        pg.draw.rect(win, DBROWN, rect)
         colors = itertools.cycle((DGREEN, GREEN))
         for x in range(SCOLS):
             for y in range(SROWS):

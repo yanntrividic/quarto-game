@@ -5,11 +5,12 @@ Created on Feb 6, 2021
 '''
 
 from enum import Enum
+import quarto.constants
 
 
 class Color(Enum):
-    BEIGE = "beige"
-    BROWN = "brown"
+    BEIGE = quarto.constants.BEIGE
+    BROWN = quarto.constants.BROWN
 
 
 class Shape(Enum):
