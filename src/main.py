@@ -29,6 +29,8 @@ def main():
         for event in pg.event.get():  # checks if anything has happened from the user
             if event.type == pg.QUIT:  # if we click de top right cross, then exit
                 run = False
+            if event.type == pg.MOUSEBUTTONDOWN:
+                pass
 
         win.fill(BG)
         game_board.draw_cells(win)  # draws the cells on the window

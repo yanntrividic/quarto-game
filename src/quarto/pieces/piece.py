@@ -5,8 +5,8 @@ Created on Feb 6, 2021
 '''
 
 import pygame as pg
-from quarto.constants import SQUARE_SIZE, SXOFFSET, SYOFFSET, LBEIGE, BEIGE, BROWN, LBROWN, DBROWN
-from .types import *
+from quarto.constants import SQUARE_SIZE, SXOFFSET, SYOFFSET, GXOFFSET, GYOFFSET, DBROWN
+from .types import Shape, Size, Hole
 
 
 class Piece:
@@ -25,22 +25,28 @@ class Piece:
 
         self.x = 0
         self.y = 0
-        self.calc_pos(True)  # initializes the position of the piece on the board
+        self.calc_pos(True)  # initializes the             position of the piece on the board
 
         self.activated = False  # a piece which hasn't been picked yet in not activated
 
     # calc_pos calculates the x y position where we need to draw the piece
     # if the game is being initialized, init == true, otherwise it's false
-    def calc_pos(self, init):
+    def calc_pos(self, init=False):
         if(init):  # when we first initialize the game
             self.x = SQUARE_SIZE * self.col + SXOFFSET + SQUARE_SIZE // 2
             self.y = SQUARE_SIZE * self.row + SYOFFSET + SQUARE_SIZE // 2
         else:  # when a piece is being put on the board
-            pass
+            self.x = SQUARE_SIZE * self.col + GXOFFSET + SQUARE_SIZE // 2
+            self.y = SQUARE_SIZE * self.row + GYOFFSET + SQUARE_SIZE // 2
 
     # when a piece has been played on the board, activated == True
     def activate(self):
         self.activated = True
+
+    def move_to_gameboard(self, row, col):
+        self.row = row
+        self.col = col
+        self.calc_pos()
 
     # displays a piece on the board. Each piece is unique as we have 2^4 caracteristics to represent
     def draw(self, win):
@@ -56,7 +62,6 @@ class Piece:
             rect = (self.x - radius, self.y - radius, radius * 2, radius * 2)
             rect_outline = (self.x - (radius + self.OUTLINE), self.y - (radius + self.OUTLINE),
                             (radius + self.OUTLINE) * 2, (radius + self.OUTLINE) * 2)
-            # FIXME: always picks de black rectangle
             pg.draw.rect(win, DBROWN, rect_outline)  # the outline
             pg.draw.rect(win, self.color.value, rect)
             if(self.hole == Hole.WITH):
@@ -65,4 +70,5 @@ class Piece:
 
     # equivalent of Java's toString() method
     def __repr__(self):
-        return str(self.size + ", " + self.color + ", " + self.shape + ", " + self.hole + ", " + self.activated)
+        return(str(self.size) + ", " + str(self.color) + ", " + str(self.shape)
+               +", " + str(self.hole) + ", " + str(self.activated))

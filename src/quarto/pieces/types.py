@@ -8,7 +8,7 @@ from enum import Enum
 import quarto.constants
 
 
-class Color(Enum):
+class Coloration(Enum):
     BEIGE = quarto.constants.BEIGE
     BROWN = quarto.constants.BROWN
 
