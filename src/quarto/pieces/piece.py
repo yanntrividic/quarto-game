@@ -6,7 +6,7 @@ Created on Feb 6, 2021
 
 import pygame as pg
 from quarto.constants import SQUARE_SIZE, SXOFFSET, SYOFFSET, GXOFFSET, GYOFFSET, DBROWN
-from .types import Shape, Size, Hole
+from .types import Shape, Size, Hole, Coloration
 
 
 class Piece:
@@ -14,12 +14,12 @@ class Piece:
     OUTLINE = 2  # outline of the piece
     INNER_PADDING = 3  # space between the hole of the piece (if there is one) and the border of the piece
 
-    def __init__(self, row, col, color, shape, size, hole):
+    def __init__(self, row, col, coloration, shape, size, hole):
         self.row = row
         self.col = col
 
         self.size = size
-        self.color = color
+        self.coloration = coloration
         self.shape = shape
         self.hole = hole
 
@@ -55,7 +55,7 @@ class Piece:
             radius -= radius // 10  # if this piece is tall, then its original size is decreased by 10%
         if(self.shape == Shape.CIRCLE):  # for the shapes
             pg.draw.circle(win, DBROWN, (self.x, self.y), radius + self.OUTLINE)  # the outline
-            pg.draw.circle(win, self.color.value, (self.x, self.y), radius)  # includes the color
+            pg.draw.circle(win, self.coloration.value, (self.x, self.y), radius)  # includes the coloration
             if(self.hole == Hole.WITH):  # for the hole
                 pg.draw.circle(win, DBROWN, (self.x, self.y), int(radius * 0.8))  # TODO: tweak the colors
         else:  # if it's not a circle
@@ -63,12 +63,18 @@ class Piece:
             rect_outline = (self.x - (radius + self.OUTLINE), self.y - (radius + self.OUTLINE),
                             (radius + self.OUTLINE) * 2, (radius + self.OUTLINE) * 2)
             pg.draw.rect(win, DBROWN, rect_outline)  # the outline
-            pg.draw.rect(win, self.color.value, rect)
+            pg.draw.rect(win, self.coloration.value, rect)
             if(self.hole == Hole.WITH):
                 rect_hole = (self.x - int(radius) // 1.5, self.y - int(radius) // 1.5, int(radius * 4 / 3), int(radius * 4 / 3))
                 pg.draw.rect(win, DBROWN, rect_hole)
 
     # equivalent of Java's toString() method
-    def __repr__(self):
-        return(str(self.size) + ", " + str(self.color) + ", " + str(self.shape)
-               +", " + str(self.hole) + ", " + str(self.activated))
+    def __repr__(self, verbose=False):
+        if(verbose):
+            return(str(self.size) + ", " + str(self.coloration) + ", " + str(self.shape) +
+                   ", " + str(self.hole) + ", " + str(self.activated))
+        else:
+            return(str("X" if(self.size == Size.TALL) else "O") +
+                   str("X" if(self.coloration == Coloration.BEIGE) else "O") +
+                   str("X" if(self.shape == Shape.SQUARE) else "O") +
+                   str("X" if(self.hole == Hole.WITHOUT) else "O"))

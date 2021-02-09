@@ -7,6 +7,6 @@ This program is partly based on the work of Mohrmann et al. (2013) and on the vi
 Mohrmann, Jochen & Neumann, Michael & Suendermann, David. (2013). 141-146. 10.1145/2500828.2500842. 
 [www.researchgate.net/publication/261848662](https://www.researchgate.net/publication/261848662)
 
-*Pyton/Pygame Checkers Tutorial*
+*Python/Pygame Checkers Tutorial*
 Tech with Tim (2020)
 [https://www.youtube.com/playlist?list=PLzMcBGfZo4-lkJr3sqpikNyVzbNZLRiT3](https://www.youtube.com/playlist?list=PLzMcBGfZo4-lkJr3sqpikNyVzbNZLRiT3)
