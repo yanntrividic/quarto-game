@@ -12,8 +12,6 @@ from quarto.pieces.piece import Piece
 from quarto.pieces.types import Coloration, Hole, Shape, Size
 
 
-# TODO: I'm not sure if having two additional classes is a good idea.
-#  we might have to make it only one class
 class Board:
 
     def __init__(self, name, storage, rows, cols, x_offset, y_offset, board_outline, light_color, dark_color):
@@ -44,9 +42,7 @@ class Board:
                             self.board[row][col] = Piece(row, col, c, sh, si, h)
                             col += 1
                 row += 1
-            print("Initialization:")
-        else:
-            print("Initialization:")
+        print("Initialization:")
         print(self.__repr__())
 
     def get_piece(self, row, col):
@@ -60,8 +56,22 @@ class Board:
         try:
             self.board[piece.row][piece.col] = 0
             game_board.put_piece(piece, row, col)
+            return(piece)
         except AttributeError:
             print("Type not valid.")
+
+    def get_row_col_from_mouse(self, pos):  # returns a row, a col or false
+        x, y = pos
+        if((x < (self.x_offset + self.cols * SQUARE_SIZE)) &
+           (x > self.x_offset) &
+           (y < self.y_offset + self.rows * SQUARE_SIZE) &
+           (y > self.y_offset)):
+            row = (y - self.y_offset) // SQUARE_SIZE
+            col = (x - self.x_offset) // SQUARE_SIZE
+            print('Clicked cell: ' + self.name + "[" + str(row) + "," + str(col) + "]")
+            return((row, col))
+        else:
+            return(-1, -1)
 
     def draw_cells(self, win):
         rect = (self.x_offset - self.board_outline,

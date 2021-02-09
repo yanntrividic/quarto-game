@@ -9,7 +9,7 @@ from quarto.boards import Board
 from quarto.constants import (HEIGHT, WIDTH, BG, BOARDOUTLINE,
                               GROWS, GCOLS, GXOFFSET, GYOFFSET,
                               SROWS, SCOLS, SXOFFSET, SYOFFSET,
-                              LGREEN, GREEN, DGREEN)
+                              LGREEN, GREEN)
 
 pg.init()
 # window_logo = pg.image.load('favicon.png')
@@ -28,8 +28,6 @@ def main():
     game_board = Board("GameBoard", False, GROWS, GCOLS, GXOFFSET, GYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
     storage_board = Board("StorageBoard", True, SROWS, SCOLS, SXOFFSET, SYOFFSET, BOARDOUTLINE - 5, LGREEN, GREEN)
 
-    storage_board.move_to_gameboard(game_board, storage_board.board[0][2], 3, 3)
-
     print(game_board.__repr__())
     print(storage_board.__repr__())
 
@@ -39,7 +37,11 @@ def main():
             if event.type == pg.QUIT:  # if we click de top right cross, then exit
                 run = False
             if event.type == pg.MOUSEBUTTONDOWN:
-                pass
+                pos = pg.mouse.get_pos()
+                row, col = storage_board.get_row_col_from_mouse(pos)
+                if(row != -1):
+                    piece = storage_board.get_piece(row, col)
+                    storage_board.move_to_gameboard(game_board, piece, 3, 3)
 
         win.fill(BG)
         game_board.draw(win)  # draws the cells on the window
