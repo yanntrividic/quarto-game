@@ -50,7 +50,7 @@ def main():
                     print(game.__repr__())
 
                 if game.winner():
-                    print("And the winner is... " + game.winner() + "!!!!!!!!")
+                    print("And the winner is... " + game.winner() + "!!!!!!!!")  # TODO: doesn't take into account tie games
                     run = False
 
         game.update(GAME_FONT)  # TODO: find more elegant way to pass this parameter

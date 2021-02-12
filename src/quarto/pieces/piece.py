@@ -25,9 +25,7 @@ class Piece:
 
         self.x = 0
         self.y = 0
-        self.calc_pos(True)  # initializes the             position of the piece on the board
-
-        self.activated = False  # a piece which hasn't been picked yet in not activated
+        self.calc_pos(True)  # initializes the (x,y) position of the piece on the board
 
     # calc_pos calculates the x y position where we need to draw the piece
     # if the game is being initialized, init == true, otherwise it's false
@@ -38,10 +36,6 @@ class Piece:
         else:  # when a piece is being put on the board
             self.x = SQUARE_SIZE * self.col + GXOFFSET + SQUARE_SIZE // 2
             self.y = SQUARE_SIZE * self.row + GYOFFSET + SQUARE_SIZE // 2
-
-    # when a piece has been played on the board, activated == True
-    def activate(self):
-        self.activated = True
 
     def move_to_gameboard(self, row, col):
         self.row = row
@@ -72,7 +66,7 @@ class Piece:
     def __repr__(self, verbose=False):
         if(verbose):
             return(str(self.size) + ", " + str(self.coloration) + ", " + str(self.shape) +
-                   ", " + str(self.hole) + ", " + str(self.activated))
+                   ", " + str(self.hole))
         else:
             return(str("X" if(self.size == Size.TALL) else "O") +
                    str("X" if(self.coloration == Coloration.BEIGE) else "O") +
