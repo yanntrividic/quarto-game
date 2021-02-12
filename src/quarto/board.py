@@ -72,13 +72,25 @@ class Board:
         else:
             return(-1, -1)
 
+    def get_valid_moves(self):
+        moves = []
+        for row in range(self.rows):
+            for col in range(self.cols):
+                piece = self.get_piece(row, col)
+                if piece != 0:
+                    moves.append((row, col))
+
+        return moves
+
     def draw_cells(self, win):
         rect = (self.x_offset - self.board_outline,
                 self.y_offset - self.board_outline,
                 SQUARE_SIZE * self.cols + 2 * self.board_outline,
                 SQUARE_SIZE * self.rows + 2 * self.board_outline)
+
         pg.draw.rect(win, DBROWN, rect)
         iter_colors = itertools.cycle(self.colors)
+
         for x in range(self.cols):
             for y in range(self.rows):
                 rect = (x * SQUARE_SIZE + self.x_offset,

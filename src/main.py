@@ -8,6 +8,8 @@ import pygame as pg
 from quarto.constants import (HEIGHT, WIDTH, BG)
 from quarto.game import Game
 
+# TODO: write the doc according to this standard : https://realpython.com/documenting-python-code/#commenting-code-via-type-hinting-python-35
+
 pg.init()
 # window_logo = pg.image.load('favicon.png')
 # pg.display.set_icon(window_logo)
@@ -36,9 +38,9 @@ def main():
             if event.type == pg.MOUSEBUTTONDOWN:
                 pos = pg.mouse.get_pos()
                 row, col = game.storage_board.get_row_col_from_mouse(pos)
-                if(row != -1):
-                    piece = game.storage_board.get_piece(row, col)
-                    game.storage_board.move_to_gameboard(game.game_board, piece, 3, 3)
+
+                game.select(row, col)
+                print(game.__repr__())
 
         game.update()
     pg.quit()  # clean exit of the program
