@@ -30,7 +30,10 @@ class Game:
         bla
     valid_moves : dict
         bla
-
+    turn : bool
+        True if player1 has to play, False if player2 has to play
+    pick :
+         True if the player has to pick a piece, False if the player has to move the piece
     Methods
     -------
     update()
@@ -69,6 +72,7 @@ class Game:
         self.game_board = Board("GameBoard", False, GROWS, GCOLS, GXOFFSET, GYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
         self.storage_board = Board("StorageBoard", True, SROWS, SCOLS, SXOFFSET, SYOFFSET, BOARDOUTLINE - 5, LGREEN, GREEN)
         self.turn = True  # TODO: how to handle this ? Technically, we only need a boolean
+        self.pick = True
         self.valid_moves = []  # at first, no piece is selected so no valid moves
 
     def reset(self):
@@ -89,6 +93,8 @@ class Game:
         '''
         if self.selected_piece:  # if we've already selected something, we move it to the position passed as a parameter
             print("Selected piece:", row, col, self.selected_piece)
+            self.change_turn()
+            self.change_pick_move()
             result = self._move(row, col)  # return either a valid position or false
             if not result:
                 self.selected_piece = None  # resets the selected piece to None
@@ -130,17 +136,24 @@ class Game:
         for move in moves:
             row, col = move
             pg.draw.circle(self.win, DGREEN,
-                           (self.game_board.x_offset + int(SQUARE_SIZE * row) - SQUARE_SIZE // 2,  # TODO: right order?
-                            self.game_board.y_offset + int(SQUARE_SIZE * col) - SQUARE_SIZE // 2),
-                           15)
+                           (self.game_board.x_offset + int(SQUARE_SIZE * row) + SQUARE_SIZE // 2,
+                            self.game_board.y_offset + int(SQUARE_SIZE * col) + SQUARE_SIZE // 2), 15)
 
     def change_turn(self):
         '''
         Changes the turn value.
         '''
         self.turn = not(self.turn)
+        print("This is now " + ("Player1" if self.turn else "Player2") + "'s turn.")
+
+    def change_pick_move(self):
+        '''
+        Changes the pick value.
+        '''
+        self.pick = not(self.pick)
+        print("This is now time to " + ("pick a" if self.turn else "move the") + " piece.")
 
     def __repr__(self):
-        return(("Player 1" if self.turn else "Player 2") + "\n" +
+        return(# ("Player 1" if self.turn else "Player 2") + "\n" +
                self.game_board.__repr__() +
                self.storage_board.__repr__() + "\n")

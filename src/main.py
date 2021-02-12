@@ -36,11 +36,17 @@ def main():
             if event.type == pg.QUIT:  # if we click de top right cross, then exit
                 run = False
             if event.type == pg.MOUSEBUTTONDOWN:
+                print("Click")
                 pos = pg.mouse.get_pos()
-                row, col = game.storage_board.get_row_col_from_mouse(pos)
 
-                game.select(row, col)
-                print(game.__repr__())
+                if(game.pick):
+                    row, col = game.storage_board.get_row_col_from_mouse(pos)
+                else:
+                    row, col = game.game_board.get_row_col_from_mouse(pos)
+
+                if((row, col) != (-1, -1)):
+                    game.select(row, col)
+                    print(game.__repr__())
 
         game.update()
     pg.quit()  # clean exit of the program

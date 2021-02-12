@@ -73,13 +73,15 @@ class Board:
             return(-1, -1)
 
     def get_valid_moves(self):
+        m = ""
         moves = []
         for row in range(self.rows):
             for col in range(self.cols):
                 piece = self.get_piece(row, col)
-                if piece != 0:
+                if piece == 0:
                     moves.append((row, col))
-
+                    m += str((row, col)) + ", "
+        # print("moves = [" + m + "]")
         return moves
 
     def draw_cells(self, win):
