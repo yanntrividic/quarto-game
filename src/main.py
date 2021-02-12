@@ -5,11 +5,8 @@ Created on Feb 6, 2021
 '''
 
 import pygame as pg
-from quarto.boards import Board
-from quarto.constants import (HEIGHT, WIDTH, BG, BOARDOUTLINE,
-                              GROWS, GCOLS, GXOFFSET, GYOFFSET,
-                              SROWS, SCOLS, SXOFFSET, SYOFFSET,
-                              LGREEN, GREEN)
+from quarto.constants import (HEIGHT, WIDTH, BG)
+from quarto.game import Game
 
 pg.init()
 # window_logo = pg.image.load('favicon.png')
@@ -25,11 +22,11 @@ def main():
     run = True
     clock = pg.time.Clock()
 
-    game_board = Board("GameBoard", False, GROWS, GCOLS, GXOFFSET, GYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
-    storage_board = Board("StorageBoard", True, SROWS, SCOLS, SXOFFSET, SYOFFSET, BOARDOUTLINE - 5, LGREEN, GREEN)
+    game = Game(win)
+    win.fill(BG)
 
-    print(game_board.__repr__())
-    print(storage_board.__repr__())
+    print(game.game_board.__repr__())
+    print(game.storage_board.__repr__())
 
     while run:  # the program will stop when run == false
         clock.tick(fps)  # limits the number of iterations of the while loop
@@ -38,16 +35,12 @@ def main():
                 run = False
             if event.type == pg.MOUSEBUTTONDOWN:
                 pos = pg.mouse.get_pos()
-                row, col = storage_board.get_row_col_from_mouse(pos)
+                row, col = game.storage_board.get_row_col_from_mouse(pos)
                 if(row != -1):
-                    piece = storage_board.get_piece(row, col)
-                    storage_board.move_to_gameboard(game_board, piece, 3, 3)
+                    piece = game.storage_board.get_piece(row, col)
+                    game.storage_board.move_to_gameboard(game.game_board, piece, 3, 3)
 
-        win.fill(BG)
-        game_board.draw(win)  # draws the cells on the window
-        storage_board.draw(win)  # draws the cells on the window
-
-        pg.display.update()  # we need to update the display in order to see changes
+        game.update()
     pg.quit()  # clean exit of the program
 
 

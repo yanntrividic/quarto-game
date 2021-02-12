@@ -19,7 +19,6 @@ class Board:
         self.storage = storage
         self.board = [[0 for _ in range(cols)] for _ in range(rows)]  # _ is a standard placeholder to ignore the warning
 
-        self.selected_piece = None  # if we have selected a piece or not
         self.pieces_count = 0  # number of pieces on the board
         self.rows = rows  # number of rows of the board
         self.cols = cols  # number of cols of the board
