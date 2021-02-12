@@ -9,7 +9,8 @@ from quarto.board import Board
 from quarto.constants import (BOARDOUTLINE, SQUARE_SIZE,
                               GROWS, GCOLS, GXOFFSET, GYOFFSET,
                               SROWS, SCOLS, SXOFFSET, SYOFFSET,
-                              LGREEN, GREEN, DGREEN, DBROWN, BG)
+                              LGREEN, GREEN, DGREEN, DBROWN, BG,
+                              PLAYER1, PLAYER2)
 
 
 class Game:
@@ -31,7 +32,7 @@ class Game:
     valid_moves : dict
         bla
     turn : bool
-        True if player1 has to play, False if player2 has to play
+        True if PLAYER1 has to play, False if PLAYER2 has to play
     pick :
          True if the player has to pick a piece, False if the player has to move the piece
     Methods
@@ -65,14 +66,14 @@ class Game:
         self.win.fill(BG)
         self.game_board.draw(self.win)
         self.storage_board.draw(self.win)
-        self.draw_valid_moves(self.valid_moves)
+        # self.draw_valid_moves(self.valid_moves)
         self.draw_turn_txt(font)
         pg.display.update()
 
     def _init(self):
         self.selected_piece = None  # if we have selected a piece or not
         self.game_board = Board("GameBoard", False, GROWS, GCOLS, GXOFFSET, GYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
-        self.storage_board = Board("StorageBoard", True, SROWS, SCOLS, SXOFFSET, SYOFFSET, BOARDOUTLINE - 5, LGREEN, GREEN)
+        self.storage_board = Board("StorageBoard", True, SROWS, SCOLS, SXOFFSET, SYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
         self.turn = True  # TODO: how to handle this ? Technically, we only need a boolean
         self.pick = True
         self.valid_moves = []  # at first, no piece is selected so no valid moves
@@ -86,51 +87,33 @@ class Game:
     def select(self, row, col):
         print("Selected piece:", row, col, self.selected_piece)
         if self.pick:  # when it's time to pick a piece from the storage board.
-            self.selected_piece = self.storage_board.get_piece(row, col)
-            self.valid_moves = self.game_board.get_valid_moves()
-            self.storage_board.selected_square = (col, row)
+            if self.storage_board.get_piece(row, col) != 0:
+                self.selected_piece = self.storage_board.get_piece(row, col)
+                self.valid_moves = self.game_board.get_valid_moves()
+                self.storage_board.selected_square = (col, row)
+                self.change_turn()
+                self.change_pick_move()
+            else:
+                self.selected_piece = None
 
         else:
             result = self._move(row, col)
+
             if not result:
                 print("Invalid position, try again")
                 return False
+
             self.selected_piece = None
             self.valid_moves = []
             self.storage_board.selected_square = None
-
-        self.change_turn()
-        self.change_pick_move()
+            self.change_turn()
+            self.change_pick_move()
 
         return True
 
-#         if self.selected_piece:  # if we've already selected something, we move it to the position passed as a parameter
-#             print("Selected piece:", row, col, self.selected_piece)
-#             result = self._move(row, col)  # return either a valid position or false
-#             if not result:
-#                 self.selected_piece = None  # resets the selected piece to None
-#                 self.select(row, col)  # gets us into the else block just below
-#
-#             else:
-#                 if self.pick:
-#                     print("select pick")
-#                     piece = self.storage_board.get_piece(row, col)  # gets the value of the piece at this position in the storage board
-#                     if piece != 0:  # if this value is not zero (i.e. if there is a piece in it)
-#                         self.selected_piece = piece  # this piece becomes the new selected piece
-#                         self.valid_moves = self.game_board.get_valid_moves()  # and we get the list of valid moves available
-#                         self.change_pick_move()
-#                         return True
-#                 else:
-#                     print("select move")
-#                     piece = self.game_board.get_piece(row, col)
-#                     if piece == 0:
-#                         self.select(row, col)
-#
-#         return False  # no piece could be selected with this iteration
-
     def winner(self):
         if self.game_board.winner():
-            return("Player1" if self.turn else "Player2")
+            return(PLAYER1 if self.turn else PLAYER2)
         return None
 
     def _move(self, row, col):
@@ -159,7 +142,10 @@ class Game:
                             self.game_board.y_offset + int(SQUARE_SIZE * row) + SQUARE_SIZE // 2), 15)
 
     def draw_turn_txt(self, font):
-        txt = "Player" + str("1" if self.turn else "2") + ", " + str("pick a" if self.pick else "move a") + " piece!"
+        if self.winner():
+            txt = (PLAYER1 if self.turn else PLAYER2) + " wins!!"
+        else:
+            txt = (PLAYER1 if self.turn else PLAYER2) + ", " + str("pick a" if self.pick else "move the") + " piece!"
         text_surface, _ = font.render(txt, DBROWN)
         self.win.blit(text_surface, (40, 250))
 
@@ -169,7 +155,7 @@ class Game:
         '''
         if self.pick:
             self.turn = not(self.turn)
-        print("This is now " + ("Player1" if self.turn else "Player2") + "'s turn.")
+        print("This is now " + (PLAYER1 if self.turn else PLAYER2) + "'s turn.")
 
     def get_row_col_from_mouse(self, pos):
         '''

@@ -52,7 +52,7 @@ class Piece:
     def draw(self, win):
         radius = SQUARE_SIZE // 2 - self.PADDING
         if(self.size == Size.LITTLE):
-            radius -= radius // 10  # if this piece is tall, then its original size is decreased by 10%
+            radius -= radius // 3  # if this piece is tall, then its original size is decreased by 33%
         if(self.shape == Shape.CIRCLE):  # for the shapes
             pg.draw.circle(win, DBROWN, (self.x, self.y), radius + self.OUTLINE)  # the outline
             pg.draw.circle(win, self.coloration.value, (self.x, self.y), radius)  # includes the coloration

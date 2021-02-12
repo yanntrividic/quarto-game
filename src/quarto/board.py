@@ -82,7 +82,7 @@ class Board:
     def _is_winning_line(self, pieces):
         if 0 in pieces:
             return False
-        p = pieces.pop()
+        p = pieces[0]
         h, s, sh, c = True, True, True, True
         for piece in pieces:
             h = (p.coloration == piece.coloration and h)
@@ -99,7 +99,7 @@ class Board:
         for col in range(self.cols):  # check every cols
             pieces = []
             for row in range(self.rows):
-                pieces.append(self.board[row][col])  # FIXME: sometimes crashes here
+                pieces.append(self.board[row][col])
             if self._is_winning_line(pieces):
                 return(True)
 
@@ -108,11 +108,11 @@ class Board:
             pieces2 = []
             for col in range(self.cols):  # check all diagonals
                 pieces.append(self.board[col][col])
-                pieces2.append(self.board[-col][col])
+                pieces2.append(self.board[col][self.cols - col - 1])
             if self._is_winning_line(pieces) | self._is_winning_line(pieces2):
                 return(True)
 
-    def get_valid_moves(self):
+    def get_valid_moves(self, print=False):
         m = ""
         moves = []
         for row in range(self.rows):
@@ -121,7 +121,8 @@ class Board:
                 if piece == 0:
                     moves.append((row, col))
                     m += str((row, col)) + ", "
-        # print("moves = [" + m + "]")
+        if print:
+            print("moves = [" + m + "]")
         return moves
 
     def draw_cells(self, win):
@@ -150,8 +151,7 @@ class Board:
         for row in range(self.rows):
             for col in range(self.cols):
                 if(self.board[row][col] != 0):
-                    # print(row, col)
-                    piece = self.board[row][col]  # FIXME: sometimes crashes here
+                    piece = self.board[row][col]
                     piece.draw(win)
 
     def __repr__(self):
