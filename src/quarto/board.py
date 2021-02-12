@@ -30,6 +30,8 @@ class Board:
         self.colors = (light_color, dark_color)  # colors of the board's squares
         self.init_pieces()
 
+        self.selected_square = None
+
     def init_pieces(self):
         if(self.storage):
             row = 0
@@ -72,6 +74,44 @@ class Board:
         else:
             return(-1, -1)
 
+    def winner(self):
+        if self._check_all_lines():
+            return True
+        return False
+
+    def _is_winning_line(self, pieces):
+        if 0 in pieces:
+            return False
+        p = pieces.pop()
+        h, s, sh, c = True, True, True, True
+        for piece in pieces:
+            h = (p.coloration == piece.coloration and h)
+            s = (p.size == piece.coloration and s)
+            sh = (p.shape == piece.shape and sh)
+            c = (p.coloration == piece.coloration and c)
+        return(h or s or sh or c)
+
+    def _check_all_lines(self):
+        for row in range(self.rows):  # checks every line
+            if self._is_winning_line(self.board[row]):
+                return(True)
+
+        for col in range(self.cols):  # check every cols
+            pieces = []
+            for row in range(self.rows):
+                pieces.append(self.board[row][col])  # FIXME: sometimes crashes here
+            if self._is_winning_line(pieces):
+                return(True)
+
+        if(self.cols == self.rows):  # if we have a square board
+            pieces = []
+            pieces2 = []
+            for col in range(self.cols):  # check all diagonals
+                pieces.append(self.board[col][col])
+                pieces2.append(self.board[-col][col])
+            if self._is_winning_line(pieces) | self._is_winning_line(pieces2):
+                return(True)
+
     def get_valid_moves(self):
         m = ""
         moves = []
@@ -98,7 +138,11 @@ class Board:
                 rect = (x * SQUARE_SIZE + self.x_offset,
                         y * SQUARE_SIZE + self.y_offset,
                         SQUARE_SIZE, SQUARE_SIZE)
-                pg.draw.rect(win, next(iter_colors), rect)
+                if self.selected_square != (x, y):
+                    pg.draw.rect(win, next(iter_colors), rect)
+                else:
+                    pg.draw.rect(win, DBROWN, rect)
+                    next(iter_colors)
             next(iter_colors)
 
     def draw(self, win):
@@ -106,7 +150,8 @@ class Board:
         for row in range(self.rows):
             for col in range(self.cols):
                 if(self.board[row][col] != 0):
-                    piece = self.board[row][col]
+                    # print(row, col)
+                    piece = self.board[row][col]  # FIXME: sometimes crashes here
                     piece.draw(win)
 
     def __repr__(self):

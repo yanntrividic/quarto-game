@@ -3,7 +3,6 @@ Created on Feb 6, 2021
 
 @author: yann
 '''
-
 import pygame as pg
 
 WIDTH, HEIGHT = 1200, 900  # pygame window dimensions
@@ -30,3 +29,4 @@ BROWN = pg.Color('saddlebrown')
 DBROWN = pg.Color((41, 21, 10))
 
 BG = (73, 67, 54)
+FONT = "freesansbold.ttf"

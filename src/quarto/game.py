@@ -9,7 +9,7 @@ from quarto.board import Board
 from quarto.constants import (BOARDOUTLINE, SQUARE_SIZE,
                               GROWS, GCOLS, GXOFFSET, GYOFFSET,
                               SROWS, SCOLS, SXOFFSET, SYOFFSET,
-                              LGREEN, GREEN, DGREEN)
+                              LGREEN, GREEN, DGREEN, DBROWN, BG)
 
 
 class Game:
@@ -51,20 +51,22 @@ class Game:
         Instantiates a new Game object.
 
         Parameters
-        ---------
+        ----------
         win:
             bla
         '''
         self._init()  # initialization of the baords
         self.win = win
 
-    def update(self):
+    def update(self, font):
         '''
         Updates the window
         '''
+        self.win.fill(BG)
         self.game_board.draw(self.win)
         self.storage_board.draw(self.win)
         self.draw_valid_moves(self.valid_moves)
+        self.draw_turn_txt(font)
         pg.display.update()
 
     def _init(self):
@@ -82,41 +84,58 @@ class Game:
         self._init()
 
     def select(self, row, col):
-        '''
-        Displays on the window a circle at position where a move is valid to the player
-
-        Parameters
-        ---------
-        row : int
-            bla
-        col : int
-        '''
-        if self.selected_piece:  # if we've already selected something, we move it to the position passed as a parameter
-            print("Selected piece:", row, col, self.selected_piece)
-            self.change_turn()
-            self.change_pick_move()
-            result = self._move(row, col)  # return either a valid position or false
-            if not result:
-                self.selected_piece = None  # resets the selected piece to None
-                self.select(row, col)  # gets us into the else block just below
+        print("Selected piece:", row, col, self.selected_piece)
+        if self.pick:  # when it's time to pick a piece from the storage board.
+            self.selected_piece = self.storage_board.get_piece(row, col)
+            self.valid_moves = self.game_board.get_valid_moves()
+            self.storage_board.selected_square = (col, row)
 
         else:
-            piece = self.storage_board.get_piece(row, col)  # gets the value of the piece at this position in the storage board
-            if piece != 0:  # if this value is not zero (i.e. if there is a piece in it)
-                self.selected_piece = piece  # this piece becomes the new selected piece
-                self.valid_moves = self.game_board.get_valid_moves()  # and we get the list of valid moves available
-                return True
+            result = self._move(row, col)
+            if not result:
+                print("Invalid position, try again")
+                return False
+            self.selected_piece = None
+            self.valid_moves = []
+            self.storage_board.selected_square = None
 
-        return False  # no piece could be selected with this iteration
+        self.change_turn()
+        self.change_pick_move()
+
+        return True
+
+#         if self.selected_piece:  # if we've already selected something, we move it to the position passed as a parameter
+#             print("Selected piece:", row, col, self.selected_piece)
+#             result = self._move(row, col)  # return either a valid position or false
+#             if not result:
+#                 self.selected_piece = None  # resets the selected piece to None
+#                 self.select(row, col)  # gets us into the else block just below
+#
+#             else:
+#                 if self.pick:
+#                     print("select pick")
+#                     piece = self.storage_board.get_piece(row, col)  # gets the value of the piece at this position in the storage board
+#                     if piece != 0:  # if this value is not zero (i.e. if there is a piece in it)
+#                         self.selected_piece = piece  # this piece becomes the new selected piece
+#                         self.valid_moves = self.game_board.get_valid_moves()  # and we get the list of valid moves available
+#                         self.change_pick_move()
+#                         return True
+#                 else:
+#                     print("select move")
+#                     piece = self.game_board.get_piece(row, col)
+#                     if piece == 0:
+#                         self.select(row, col)
+#
+#         return False  # no piece could be selected with this iteration
+
+    def winner(self):
+        if self.game_board.winner():
+            return("Player1" if self.turn else "Player2")
+        return None
 
     def _move(self, row, col):
         '''
-        Displays on the window a circle at position where a move is valid to the player
-
-        Parameters
-        ---------
-        moves : list of (int, int)
-            list of valid moves represented as tuples of board coordinates (row, col)
+        Moves the selected_piece to the x, y position given as parameter on the game_board
         '''
         if self.selected_piece and (row, col) in self.valid_moves:
             self.storage_board.move_to_gameboard(self.game_board, self.selected_piece, row, col)
@@ -129,22 +148,44 @@ class Game:
         Displays on the window a circle at position where a move is valid to the player
 
         Parameters
-        ---------
+        ----------
         moves: list of (int, int)
             list of valid moves represented as tuples of board coordinates (row, col)
         '''
         for move in moves:
             row, col = move
             pg.draw.circle(self.win, DGREEN,
-                           (self.game_board.x_offset + int(SQUARE_SIZE * row) + SQUARE_SIZE // 2,
-                            self.game_board.y_offset + int(SQUARE_SIZE * col) + SQUARE_SIZE // 2), 15)
+                           (self.game_board.x_offset + int(SQUARE_SIZE * col) + SQUARE_SIZE // 2,
+                            self.game_board.y_offset + int(SQUARE_SIZE * row) + SQUARE_SIZE // 2), 15)
+
+    def draw_turn_txt(self, font):
+        txt = "Player" + str("1" if self.turn else "2") + ", " + str("pick a" if self.pick else "move a") + " piece!"
+        text_surface, _ = font.render(txt, DBROWN)
+        self.win.blit(text_surface, (40, 250))
 
     def change_turn(self):
         '''
         Changes the turn value.
         '''
-        self.turn = not(self.turn)
+        if self.pick:
+            self.turn = not(self.turn)
         print("This is now " + ("Player1" if self.turn else "Player2") + "'s turn.")
+
+    def get_row_col_from_mouse(self, pos):
+        '''
+        Gets the (row, col) coordinates of where the player clicked depending on
+        the self.pick value (i.e. depending on if it was time to pick a piece or
+        to move one.
+
+        Parameters
+        ----------
+        pos : (int, int)
+            (x, y) position of the pixel clicked.
+        '''
+        if(self.pick):
+            return(self.storage_board.get_row_col_from_mouse(pos))
+        else:
+            return(self.game_board.get_row_col_from_mouse(pos))
 
     def change_pick_move(self):
         '''
@@ -154,6 +195,5 @@ class Game:
         print("This is now time to " + ("pick a" if self.turn else "move the") + " piece.")
 
     def __repr__(self):
-        return(# ("Player 1" if self.turn else "Player 2") + "\n" +
-               self.game_board.__repr__() +
+        return(self.game_board.__repr__() +
                self.storage_board.__repr__() + "\n")
