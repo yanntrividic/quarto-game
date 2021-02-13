@@ -85,8 +85,8 @@ class Board:
         p = pieces[0]
         h, s, sh, c = True, True, True, True
         for piece in pieces:
-            h = (p.coloration == piece.coloration and h)
-            s = (p.size == piece.coloration and s)
+            h = (p.hole == piece.hole and h)
+            s = (p.size == piece.size and s)
             sh = (p.shape == piece.shape and sh)
             c = (p.coloration == piece.coloration and c)
         return(h or s or sh or c)
