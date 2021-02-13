@@ -31,5 +31,5 @@ DBROWN = pg.Color((41, 21, 10))
 BG = (73, 67, 54)
 FONT = "freesansbold.ttf"
 
-PLAYER1 = "PLAYER1"
-PLAYER2 = "PLAYER2"
+PLAYER1 = "Huitre"
+PLAYER2 = "Bulot"

@@ -108,7 +108,7 @@ class Board:
             pieces2 = []
             for col in range(self.cols):  # check all diagonals
                 pieces.append(self.board[col][col])
-                pieces2.append(self.board[col][self.cols - col - 1])
+                pieces2.append(self.board[self.cols - col - 1][col])
             if self._is_winning_line(pieces) | self._is_winning_line(pieces2):
                 return(True)
 
