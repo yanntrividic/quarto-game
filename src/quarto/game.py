@@ -26,11 +26,11 @@ class Game:
     selected_piece : Piece
         None is no piece is selected, a Piece object waiting to be moved if a piece is selected
     game_board : Board
-        bla
+        board where the game takes place 
     storage_board : Board
-        bla
+        board where the pieces are located before being chosed
     valid_moves : dict
-        bla
+        all the valids moves that the player can do
     turn : bool
         True if PLAYER1 has to play, False if PLAYER2 has to play
     pick :
@@ -42,9 +42,9 @@ class Game:
     reset()
         Resets the game.
     select(row, col)
-        bla
+        when the player choose a piece from the storage board
     move(row, col)
-        bla
+        when the player put a piece on the game board
     '''
 
     def __init__(self, win):
@@ -53,8 +53,9 @@ class Game:
 
         Parameters
         ----------
-        win:
-            bla
+        win : Pygame window for display
+        The window where the game is displayed
+            
         '''
         self._init()  # initialization of the baords
         self.win = win
@@ -62,6 +63,10 @@ class Game:
     def update(self, font):
         '''
         Updates the window
+
+        Parameters
+        ----------
+        font : 
         '''
         self.win.fill(BG)
         self.game_board.draw(self.win)
