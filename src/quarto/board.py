@@ -15,6 +15,23 @@ from quarto.pieces.types import Coloration, Hole, Shape, Size
 class Board:
 
     def __init__(self, name, storage, rows, cols, x_offset, y_offset, board_outline, light_color, dark_color):
+        '''
+        A class to represent the game board
+
+        Attributes
+        ----------
+        name : String
+        storage :
+        board:
+        pieces_count:
+        rows:
+        cols:
+        x_offset:
+        y_offset:
+        board_outline:
+        colors:
+        selected_square:
+        '''
         self.name = name
         self.storage = storage
         self.board = [[0 for _ in range(cols)] for _ in range(rows)]  # _ is a standard placeholder to ignore the warning

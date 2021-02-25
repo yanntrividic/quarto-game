@@ -8,13 +8,22 @@ import pygame as pg
 from quarto.constants import SQUARE_SIZE, SXOFFSET, SYOFFSET, GXOFFSET, GYOFFSET, DBROWN
 from .types import Shape, Size, Hole, Coloration
 
-
 class Piece:
+    """
+    This class represent a piece in game.
+    It has differents attributes an
+    """
     PADDING = 15  # space between the border of a cell and the piece
     OUTLINE = 2  # outline of the piece
     INNER_PADDING = 3  # space between the hole of the piece (if there is one) and the border of the piece
 
+
     def __init__(self, row, col, coloration, shape, size, hole):
+        """
+        Piece's constructor : 
+            -each of the 16 pieces is unique this is the reason why it recquires the coloration, shape, size and hole attributes
+            -the row and col helps to locate the piece 
+        """
         self.row = row
         self.col = col
 
@@ -36,6 +45,7 @@ class Piece:
         else:  # when a piece is being put on the board
             self.x = SQUARE_SIZE * self.col + GXOFFSET + SQUARE_SIZE // 2
             self.y = SQUARE_SIZE * self.row + GYOFFSET + SQUARE_SIZE // 2
+
 
     def move_to_gameboard(self, row, col):
         self.row = row
@@ -62,8 +72,10 @@ class Piece:
                 rect_hole = (self.x - int(radius) // 1.5, self.y - int(radius) // 1.5, int(radius * 4 / 3), int(radius * 4 / 3))
                 pg.draw.rect(win, DBROWN, rect_hole)
 
-    # equivalent of Java's toString() method
     def __repr__(self, verbose=False):
+        '''
+        represent the object in a string format
+        '''
         if(verbose):
             return(str(self.size) + ", " + str(self.coloration) + ", " + str(self.shape) +
                    ", " + str(self.hole))

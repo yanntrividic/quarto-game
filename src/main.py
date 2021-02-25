@@ -26,9 +26,13 @@ pg.display.set_caption('Quarto!')
 
 
 def main():
+    """
+    The main fonction, the head of the programme, also serv as the time and win controller
+    """
     run = True
     clock = pg.time.Clock()
 
+    
     game = Game(win)
 
     print(game.game_board.__repr__())
@@ -43,9 +47,9 @@ def main():
             if event.type == pg.MOUSEBUTTONDOWN:
                 print("Click")  # everytime the user presses his mouse button, we print click
                 pos = pg.mouse.get_pos()  # (x, y) pos of the mouse when pressed
-                row, col = game.get_row_col_from_mouse(pos)
+                row, col = game.get_row_col_from_mouse(pos) 
 
-                if((row, col) != (-1, -1)):
+                if((row, col) != (-1, -1)): #if pieces has been taken do nothing
                     game.select(row, col)
                     print(game.__repr__())
 
