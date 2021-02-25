@@ -90,6 +90,14 @@ class Game:
         self._init()
 
     def select(self, row, col):
+        '''
+        Select a piece from the storage board
+
+        Parametres
+        ----------
+        row : the selected piece's row
+        col : the selected piece's column
+        '''
         print("Selected piece:", row, col, self.selected_piece)
         if self.pick:  # when it's time to pick a piece from the storage board.
             if self.storage_board.get_piece(row, col) != 0:
@@ -117,6 +125,9 @@ class Game:
         return True
 
     def winner(self):
+        '''
+
+        '''
         if self.game_board.winner():
             return(PLAYER1 if self.turn else PLAYER2)
         return None
@@ -147,6 +158,13 @@ class Game:
                             self.game_board.y_offset + int(SQUARE_SIZE * row) + SQUARE_SIZE // 2), 15)
 
     def draw_turn_txt(self, font):
+        '''
+        Displays on the window a text that tell:
+
+        Parameters
+        ----------
+        font : the font used for the text
+        '''
         if self.winner():
             txt = (PLAYER1 if self.turn else PLAYER2) + " wins!!"
         else:
@@ -186,5 +204,8 @@ class Game:
         print("This is now time to " + ("pick a" if self.turn else "move the") + " piece.")
 
     def __repr__(self):
+        '''
+        represent the object in a string format
+        '''
         return(self.game_board.__repr__() +
-               self.storage_board.__repr__() + "\n")
+            self.storage_board.__repr__() + "\n")
