@@ -20,7 +20,7 @@ class Board:
 
         Attributes
         ----------
-        name : String
+        name : string
         storage :
         board:
         pieces_count:
@@ -130,6 +130,8 @@ class Board:
                 return(True)
 
     def get_valid_moves(self, print=False):
+        '''
+        '''
         m = ""
         moves = []
         for row in range(self.rows):
@@ -143,6 +145,8 @@ class Board:
         return moves
 
     def draw_cells(self, win):
+        '''
+        '''
         rect = (self.x_offset - self.board_outline,
                 self.y_offset - self.board_outline,
                 SQUARE_SIZE * self.cols + 2 * self.board_outline,
@@ -164,6 +168,8 @@ class Board:
             next(iter_colors)
 
     def draw(self, win):
+        '''
+        '''
         self.draw_cells(win)
         for row in range(self.rows):
             for col in range(self.cols):
@@ -172,6 +178,9 @@ class Board:
                     piece.draw(win)
 
     def __repr__(self):
+        '''
+        represent the object in a string format
+        '''
         s = self.name + ":\n"
         for x in range(self.rows):
             for y in range(self.cols):

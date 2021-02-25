@@ -31,5 +31,5 @@ DBROWN = pg.Color((41, 21, 10)) #dark brown
 BG = (73, 67, 54) #BackGround
 FONT = "freesansbold.ttf" #the font used for the text in the game
 
-PLAYER1 = "PLAYER1" #the tow players
+PLAYER1 = "PLAYER1" #the two players
 PLAYER2 = "PLAYER2"
