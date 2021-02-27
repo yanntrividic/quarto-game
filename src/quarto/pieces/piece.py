@@ -57,7 +57,11 @@ class Piece:
     def calc_pos(self, init=False):
         '''
         calc_pos calculates the x y position where we need to draw the piece
-        if the game is being initialized, init == true, otherwise it's false
+        
+        Parameters
+        ----------
+        init : Boolean
+            if the game is being initialized, init == true, otherwise it's false
         '''
         if(init):  # when we first initialize the game
             self.x = SQUARE_SIZE * self.col + SXOFFSET + SQUARE_SIZE // 2
@@ -70,7 +74,14 @@ class Piece:
     def move_to_gameboard(self, row, col):
         '''
         Change the row and col of the piece
-        '''
+
+        Parameters
+        ----------
+        row : int
+            the row of the piece
+        col : int
+            the column of the piece
+        ''' 
         self.row = row
         self.col = col
         self.calc_pos()
@@ -78,6 +89,11 @@ class Piece:
     def draw(self, win):
         '''
         displays a piece on the board. Each piece is unique as we have 2^4 caracteristics to represent
+
+        Parameters
+        ----------
+        win : Pygame window for display
+            The window where the game is displayed
         '''
         radius = SQUARE_SIZE // 2 - self.PADDING
         if(self.size == Size.LITTLE):
@@ -99,7 +115,13 @@ class Piece:
 
     def __repr__(self, verbose=False):
         '''
-        represent the object in a string format
+        Represent the object in a string format of 4 caracters
+        each caracter represent a caracteristic
+
+        Parameters
+        ----------
+        verbose : Boolean
+
         '''
         if(verbose):
             return(str(self.size) + ", " + str(self.coloration) + ", " + str(self.shape) +
