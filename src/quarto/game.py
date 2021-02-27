@@ -66,7 +66,9 @@ class Game:
 
         Parameters
         ----------
-        font : 
+        font : String
+            The font of the caracters in the game
+
         '''
         self.win.fill(BG)
         self.game_board.draw(self.win)
@@ -95,9 +97,12 @@ class Game:
 
         Parametres
         ----------
-        row : the selected piece's row
-        col : the selected piece's column
+        row : int
+            the row of the selected piece
+        col : int
+            the column of the selected piece 
         '''
+        #print this as a text on the terminal
         print("Selected piece:", row, col, self.selected_piece)
         if self.pick:  # when it's time to pick a piece from the storage board.
             if self.storage_board.get_piece(row, col) != 0:
@@ -126,7 +131,7 @@ class Game:
 
     def winner(self):
         '''
-
+        Say if there is a winner and who is the winner
         '''
         if self.game_board.winner():
             return(PLAYER1 if self.turn else PLAYER2)
@@ -135,6 +140,13 @@ class Game:
     def _move(self, row, col):
         '''
         Moves the selected_piece to the x, y position given as parameter on the game_board
+        Parameters
+        ----------
+        row : int
+            the row of the selected piece
+        col : int
+            the column of the selected piece 
+        
         '''
         if self.selected_piece and (row, col) in self.valid_moves:
             self.storage_board.move_to_gameboard(self.game_board, self.selected_piece, row, col)
