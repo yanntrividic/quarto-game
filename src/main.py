@@ -9,7 +9,7 @@ import sys
 import pygame.freetype
 
 import pygame as pg
-from quarto.constants import (HEIGHT, WIDTH, FONT)
+from quarto.constants import (HEIGHT, WIDTH, FONT, TIE)
 from quarto.game import Game
 
 # TODO: write the doc according to this standard : https://realpython.com/documenting-python-code/#commenting-code-via-type-hinting-python-35
@@ -54,7 +54,10 @@ def main():
                     print(game.__repr__())
 
                 if game.winner():
-                    print("And the winner is... " + game.winner() + "!!!!!!!!")  # TODO: doesn't take into account tie games
+                    if game.winner() == TIE :
+                        print("Nobody won ... it's a TIIIIIIE !!!!!!")
+                    else :
+                        print("And the winner is... " + game.winner() + "!!!!!!!!")
                     run = False
 
         game.update(GAME_FONT)  # TODO: find more elegant way to pass this parameter

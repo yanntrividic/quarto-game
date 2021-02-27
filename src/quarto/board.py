@@ -152,7 +152,16 @@ class Board:
         if self._check_all_lines():
             return True
         return False
-        
+
+    def is_full(self):
+        '''
+        Check if the board is full
+        '''
+        for row in range(self.rows):
+            if 0 in self.board[row] :
+                return False
+        return True
+            
     def _is_winning_line(self, pieces):
         '''
         Check if a line is full of the same symbol

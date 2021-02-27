@@ -33,3 +33,4 @@ FONT = "freesansbold.ttf" #the font used for the text in the game
 
 PLAYER1 = "PLAYER1" #the two players
 PLAYER2 = "PLAYER2"
+TIE = "TIE" #if there is no winner

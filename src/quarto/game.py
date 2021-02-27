@@ -10,7 +10,7 @@ from quarto.constants import (BOARDOUTLINE, SQUARE_SIZE,
                               GROWS, GCOLS, GXOFFSET, GYOFFSET,
                               SROWS, SCOLS, SXOFFSET, SYOFFSET,
                               LGREEN, GREEN, DGREEN, DBROWN, BG,
-                              PLAYER1, PLAYER2)
+                              PLAYER1, PLAYER2, TIE)
 
 
 class Game:
@@ -135,6 +135,8 @@ class Game:
         '''
         if self.game_board.winner():
             return(PLAYER1 if self.turn else PLAYER2)
+        elif self.game_board.is_full():
+            return TIE
         return None
 
     def _move(self, row, col):
@@ -178,7 +180,10 @@ class Game:
         font : the font used for the text
         '''
         if self.winner():
-            txt = (PLAYER1 if self.turn else PLAYER2) + " wins!!"
+            if self.winner() == TIE :
+                txt = "Tie! Nobody won."
+            else :
+                txt = (PLAYER1 if self.turn else PLAYER2) + " wins!!"
         else:
             txt = (PLAYER1 if self.turn else PLAYER2) + ", " + str("pick a" if self.pick else "move the") + " piece!"
         text_surface, _ = font.render(txt, DBROWN)
