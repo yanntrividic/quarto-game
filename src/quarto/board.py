@@ -20,36 +20,50 @@ class Board:
 
         Attributes
         ----------
-        name : string
-        storage :
-        board:
-        pieces_count:
-        rows:
-        cols:
-        x_offset:
-        y_offset:
+        name : String
+            The name of the board
+        storage : 
+            The storage board
+        board: int [][]
+            the game board
+        pieces_count: int
+            number of pieces on the board
+        rows: int
+            number of rows of the board
+        cols: int
+            number of cols of the board
+        x_offset: ints
+            x position where we start drawing the board
+        y_offset: int
+            y position where we start drawing the board
         board_outline:
-        colors:
+            outline thickness of the board
+        colors: pygame.Color()
+            colors of the board's squares
         selected_square:
+            The square selected by the user
         '''
         self.name = name
         self.storage = storage
         self.board = [[0 for _ in range(cols)] for _ in range(rows)]  # _ is a standard placeholder to ignore the warning
 
-        self.pieces_count = 0  # number of pieces on the board
-        self.rows = rows  # number of rows of the board
-        self.cols = cols  # number of cols of the board
+        self.pieces_count = 0  
+        self.rows = rows  
+        self.cols = cols  
 
-        self.x_offset = x_offset  # x position where we start drawing the board
-        self.y_offset = y_offset  # y position where we start drawing the board
-        self.board_outline = board_outline  # outline thickness of the board
+        self.x_offset = x_offset  
+        self.y_offset = y_offset  
+        self.board_outline = board_outline  
 
-        self.colors = (light_color, dark_color)  # colors of the board's squares
+        self.colors = (light_color, dark_color)  
         self.init_pieces()
 
         self.selected_square = None
 
     def init_pieces(self):
+        '''
+        Initialize the pieces in the storage board, the 2^4 differents onew
+        '''
         if(self.storage):
             row = 0
             for c in Coloration:
@@ -60,17 +74,47 @@ class Board:
                             self.board[row][col] = Piece(row, col, c, sh, si, h)
                             col += 1
                 row += 1
+        #Represent the storage board in the terminal
         print("Initialization:")
         print(self.__repr__())
 
+    
     def get_piece(self, row, col):
         return(self.board[row][col])
 
     def put_piece(self, piece, row, col):
+        '''
+        Put the piece on the game board
+
+        Parameters
+        ----------
+        piece : Piece
+            The selected piece
+        row : int
+            the row of the piece
+        col : int
+            the column of the piece
+
+        '''        
         self.board[row][col] = piece
         piece.move_to_gameboard(row, col)
 
     def move_to_gameboard(self, game_board, piece, row, col):
+        '''
+        Put a piece on the game board
+
+        Parameters
+        ----------
+
+        game_board : Board
+            The game board
+        piece : Piece
+            The selected piece
+        row : int
+            the row where the piece will be on the game board
+        col : int
+            the column where the piece will be on the game board
+        '''
         try:
             self.board[piece.row][piece.col] = 0
             game_board.put_piece(piece, row, col)
@@ -79,6 +123,15 @@ class Board:
             print("Type not valid.")
 
     def get_row_col_from_mouse(self, pos):  # returns a row, a col or false
+        '''
+        Get the row and column of the selected cell with the mouse
+        
+        Parameters
+        ----------
+
+        pos : (int,int)
+            the position of the selected cell
+        '''
         x, y = pos
         if((x < (self.x_offset + self.cols * SQUARE_SIZE)) &
            (x > self.x_offset) &
@@ -92,11 +145,23 @@ class Board:
             return(-1, -1)
 
     def winner(self):
+        '''
+        Check if a player has won
+        '''
         if self._check_all_lines():
             return True
         return False
 
     def _is_winning_line(self, pieces):
+        '''
+        Check if a line is full of the same symbol
+
+        Parameters
+        ----------
+        Pieces :  int[]
+            the pieces in a line
+            
+        '''
         if 0 in pieces:
             return False
         p = pieces[0]
@@ -109,6 +174,9 @@ class Board:
         return(h or s or sh or c)
 
     def _check_all_lines(self):
+        '''
+        Check each rows and columns to see if a player has won.
+        '''
         for row in range(self.rows):  # checks every line
             if self._is_winning_line(self.board[row]):
                 return(True)
@@ -131,6 +199,12 @@ class Board:
 
     def get_valid_moves(self, print=False):
         '''
+        Check which are the valid moves
+
+        Parameters
+        ----------
+        print : Boolean
+            If we want to show the moves on the terminal
         '''
         m = ""
         moves = []
@@ -140,12 +214,20 @@ class Board:
                 if piece == 0:
                     moves.append((row, col))
                     m += str((row, col)) + ", "
+        #Represents the moves on the terminal
         if print:
             print("moves = [" + m + "]")
         return moves
 
     def draw_cells(self, win):
         '''
+        Draw the cells of the board
+
+        Parameters
+        ----------
+        win : Pygame window for display
+        The window where the game is displayed
+
         '''
         rect = (self.x_offset - self.board_outline,
                 self.y_offset - self.board_outline,
@@ -169,6 +251,12 @@ class Board:
 
     def draw(self, win):
         '''
+        Draw the board
+
+        Parameters
+        ----------
+        win : Pygame window for display
+        The window where the game is displayed
         '''
         self.draw_cells(win)
         for row in range(self.rows):
