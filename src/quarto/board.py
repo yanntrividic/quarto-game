@@ -88,6 +88,7 @@ class Board:
 
         Parameters
         ----------
+
         piece : Piece
             The selected piece
         row : int
@@ -151,7 +152,7 @@ class Board:
         if self._check_all_lines():
             return True
         return False
-
+        
     def _is_winning_line(self, pieces):
         '''
         Check if a line is full of the same symbol
@@ -178,15 +179,17 @@ class Board:
         Check each rows and columns to see if a player has won.
         '''
         for row in range(self.rows):  # checks every line
-            if self._is_winning_line(self.board[row]):
-                return(True)
+            if not(0 in self.board[row]):
+                if self._is_winning_line(self.board[row]):
+                    return(True)
 
         for col in range(self.cols):  # check every cols
             pieces = []
             for row in range(self.rows):
                 pieces.append(self.board[row][col])
-            if self._is_winning_line(pieces):
-                return(True)
+            if not(0 in pieces) :
+                if self._is_winning_line(pieces):
+                    return(True)
 
         if(self.cols == self.rows):  # if we have a square board
             pieces = []
@@ -194,8 +197,12 @@ class Board:
             for col in range(self.cols):  # check all diagonals
                 pieces.append(self.board[col][col])
                 pieces2.append(self.board[col][self.cols - col - 1])
-            if self._is_winning_line(pieces) | self._is_winning_line(pieces2):
-                return(True)
+            if not(0 in pieces) :
+                if self._is_winning_line(pieces) :
+                    return(True)
+            if not(0 in pieces2) :
+                if self._is_winning_line(pieces2):
+                    return(True)
 
     def get_valid_moves(self, print=False):
         '''
