@@ -11,7 +11,23 @@ from .types import Shape, Size, Hole, Coloration
 class Piece:
     """
     This class represent a piece in game.
-    It has differents attributes an
+    ...
+
+    Attributes
+    ----------
+    row : int
+        The row where the piece is located
+    col : int
+        The column where the piece is located
+    coloration : Coloration(Enum)
+        The color of the piece BEIGE or BROWN
+    shape : Shape(Enum)
+        The shape of the piece SQUARE or CIRCLE
+    size : Size(Enum)
+        The size of the piece TALL or LITTLE
+    hole : Hole(Enum)
+        If there is a hole or not in the piece With or WITHOUT
+    
     """
     PADDING = 15  # space between the border of a cell and the piece
     OUTLINE = 2  # outline of the piece
@@ -21,8 +37,9 @@ class Piece:
     def __init__(self, row, col, coloration, shape, size, hole):
         """
         Piece's constructor : 
-            -each of the 16 pieces is unique this is the reason why it recquires the coloration, shape, size and hole attributes
-            -the row and col helps to locate the piece 
+            -the row and col helps to locate the piece
+            -each of the 2^4 pieces is unique this is the reason why it recquires the coloration, shape, size and hole attributes
+             
         """
         self.row = row
         self.col = col
@@ -36,9 +53,12 @@ class Piece:
         self.y = 0
         self.calc_pos(True)  # initializes the (x,y) position of the piece on the board
 
-    # calc_pos calculates the x y position where we need to draw the piece
-    # if the game is being initialized, init == true, otherwise it's false
+  
     def calc_pos(self, init=False):
+        '''
+        calc_pos calculates the x y position where we need to draw the piece
+        if the game is being initialized, init == true, otherwise it's false
+        '''
         if(init):  # when we first initialize the game
             self.x = SQUARE_SIZE * self.col + SXOFFSET + SQUARE_SIZE // 2
             self.y = SQUARE_SIZE * self.row + SYOFFSET + SQUARE_SIZE // 2
@@ -48,12 +68,17 @@ class Piece:
 
 
     def move_to_gameboard(self, row, col):
+        '''
+        Change the row and col of the piece
+        '''
         self.row = row
         self.col = col
         self.calc_pos()
 
-    # displays a piece on the board. Each piece is unique as we have 2^4 caracteristics to represent
     def draw(self, win):
+        '''
+        displays a piece on the board. Each piece is unique as we have 2^4 caracteristics to represent
+        '''
         radius = SQUARE_SIZE // 2 - self.PADDING
         if(self.size == Size.LITTLE):
             radius -= radius // 3  # if this piece is tall, then its original size is decreased by 33%

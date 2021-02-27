@@ -27,13 +27,14 @@ pg.display.set_caption('Quarto!')
 
 def main():
     """
-    The main fonction, the head of the programme, also serv as the time and win controller
+    The main fonction, the head of the programme
     """
     run = True
     clock = pg.time.Clock()
 
     game = Game(win)
 
+    #the game as text in the terminal
     print(game.game_board.__repr__())
     print(game.storage_board.__repr__())
 
@@ -58,11 +59,12 @@ def main():
 
         game.update(GAME_FONT)  # TODO: find more elegant way to pass this parameter
 
+    #exit the programme if asked by the user
     while True:
         for event in pygame.event.get():
             if event.type == pg.QUIT:
                 pygame.quit()
                 sys.exit()
 
-
+#execute the main function
 main()

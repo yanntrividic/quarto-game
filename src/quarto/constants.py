@@ -7,7 +7,7 @@ import pygame as pg
 
 WIDTH, HEIGHT = 1200, 900  # pygame window dimensions
 SQUARE_SIZE = WIDTH // 12 # the pygame window's width is composed of 12 small 
-BOARDOUTLINE = SQUARE_SIZE // 10 
+BOARDOUTLINE = SQUARE_SIZE // 10    
 
 GROWS, GCOLS = 4, 4  # grid dimensions
 GXOFFSET = WIDTH // 2 - SQUARE_SIZE * GCOLS // 2  # centers the grid horizonally
