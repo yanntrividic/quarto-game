@@ -9,7 +9,7 @@ from quarto.board import Board
 from quarto.constants import (BOARDOUTLINE, SQUARE_SIZE,
                               GROWS, GCOLS, GXOFFSET, GYOFFSET,
                               SROWS, SCOLS, SXOFFSET, SYOFFSET,
-                              LGREEN, GREEN, DGREEN, DBROWN, WHEAT, BG,
+                              LGREEN, GREEN, DGREEN, DBROWN, WHEAT, PAYAYA, BG,
                               PLAYER1, PLAYER2, AI1, AI2, AI3, TIE)
 
 
@@ -76,6 +76,7 @@ class Game:
         # self.draw_valid_moves(self.valid_moves)
         self.draw_players_txt(font)
         self.draw_turn_txt(font)
+        self.draw_change_players(font, self.win)
         pg.display.update()
 
     def _init(self):
@@ -198,9 +199,34 @@ class Game:
         '''
         text_surface1, _ = font.render(self.player1, WHEAT)
         text_surface2, _ = font.render(self.player2, WHEAT)
-        self.win.blit(text_surface1, (1000, 250))
-        self.win.blit(text_surface2, (1000, 300))
+        self.win.blit(text_surface1, (950, 250))
+        self.win.blit(text_surface2, (950, 325))
+    
+    def draw_change_players(self, font, win):
+        '''
+        '''
+        x1l = 930
+        y1l = 260
 
+        x1r = 1075
+        y1r = 260
+
+        x2l = 930
+        y2l = 335
+        
+        x2r = 1075
+        y2r = 335
+        
+        text_surface, _ = font.render("JOUEURS", DBROWN)
+        self.win.blit(text_surface, (945, 200))
+        points_player1_arrow_left = [(x1l,y1l), (x1l-20,y1l), (x1l-20, y1l+7), (x1l-32,y1l-5), (x1l-20,y1l-10-7), (x1l-20, y1l-10), (x1l, y1l-10)]
+        points_player1_arrow_right = [(x1r,y1r), (x1r+20,y1r), (x1r+20, y1r+7), (x1r+32,y1r-5), (x1r+20,y1r-10-7), (x1r+20, y1r-10), (x1r, y1r-10)]
+        points_player2_arrow_left = [(x2l,y2l), (x2l-20,y2l), (x2l-20, y2l+7), (x2l-32,y2l-5), (x2l-20,y2l-10-7), (x2l-20, y2l-10), (x2l, y2l-10)]
+        points_player2_arrow_right = [(x2r,y2r), (x2r+20,y2r), (x2r+20, y2r+7), (x2r+32,y2r-5), (x2r+20,y2r-10-7), (x2r+20, y2r-10), (x2r, y2r-10)]
+        pg.draw.polygon(win, PAYAYA, points_player1_arrow_left)
+        pg.draw.polygon(win, PAYAYA, points_player1_arrow_right)
+        pg.draw.polygon(win, PAYAYA, points_player2_arrow_left)
+        pg.draw.polygon(win, PAYAYA, points_player2_arrow_right)
 
     def change_turn(self):
         '''

@@ -37,13 +37,14 @@ BROWN = pg.Color('saddlebrown') #brown
 DBROWN = pg.Color((41, 21, 10)) #dark brown
 
 WHEAT = pg.Color('wheat')
+PAYAYA = pg.Color('papayawhip')
 
 BG = (73, 67, 54) #BackGround
 FONT = "freesansbold.ttf" #the font used for the text in the game
 
 PLAYER1 = "PLAYER1" #the two players
 PLAYER2 = "PLAYER2"
-AI1 = "AI1" #the 3 artificial intelligence the player can play against
-AI2 = "AI2"
-AI3 = "AI3"
+AI1 = "     AI1" #the 3 artificial intelligence the player can play against
+AI2 = "     AI2"
+AI3 = "     AI3"
 TIE = "TIE" #if there is no winner
