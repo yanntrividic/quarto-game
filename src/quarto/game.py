@@ -9,8 +9,8 @@ from quarto.board import Board
 from quarto.constants import (BOARDOUTLINE, SQUARE_SIZE,
                               GROWS, GCOLS, GXOFFSET, GYOFFSET,
                               SROWS, SCOLS, SXOFFSET, SYOFFSET,
-                              LGREEN, GREEN, DGREEN, DBROWN, BG,
-                              PLAYER1, PLAYER2, TIE)
+                              LGREEN, GREEN, DGREEN, DBROWN, WHEAT, BG,
+                              PLAYER1, PLAYER2, AI1, AI2, AI3, TIE)
 
 
 class Game:
@@ -74,6 +74,7 @@ class Game:
         self.game_board.draw(self.win)
         self.storage_board.draw(self.win)
         # self.draw_valid_moves(self.valid_moves)
+        self.draw_players_txt(font)
         self.draw_turn_txt(font)
         pg.display.update()
 
@@ -82,6 +83,9 @@ class Game:
         self.game_board = Board("GameBoard", False, GROWS, GCOLS, GXOFFSET, GYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
         self.storage_board = Board("StorageBoard", True, SROWS, SCOLS, SXOFFSET, SYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
         self.turn = True  # TODO: how to handle this ? Technically, we only need a boolean
+        self.player1 = PLAYER1
+        self.player2 = PLAYER2
+        self.players = (PLAYER1, PLAYER2, AI1, AI2, AI3)
         self.pick = True
         self.valid_moves = []  # at first, no piece is selected so no valid moves
 
@@ -134,7 +138,7 @@ class Game:
         Say if there is a winner and who is the winner
         '''
         if self.game_board.winner():
-            return(PLAYER1 if self.turn else PLAYER2)
+            return(self.player1 if self.turn else self.player2)
         elif self.game_board.is_full():
             return TIE
         return None
@@ -183,11 +187,20 @@ class Game:
             if self.winner() == TIE :
                 txt = "Tie! Nobody won."
             else :
-                txt = (PLAYER1 if self.turn else PLAYER2) + " wins!!"
+                txt = (self.player1 if self.turn else self.player2) + " wins!!"
         else:
-            txt = (PLAYER1 if self.turn else PLAYER2) + ", " + str("pick a" if self.pick else "move the") + " piece!"
+            txt = (self.player1 if self.turn else self.player2) + ", " + str("pick a" if self.pick else "move the") + " piece!"
         text_surface, _ = font.render(txt, DBROWN)
         self.win.blit(text_surface, (40, 250))
+    
+    def draw_players_txt(self,font):
+        '''
+        '''
+        text_surface1, _ = font.render(self.player1, WHEAT)
+        text_surface2, _ = font.render(self.player2, WHEAT)
+        self.win.blit(text_surface1, (1000, 250))
+        self.win.blit(text_surface2, (1000, 300))
+
 
     def change_turn(self):
         '''
@@ -195,7 +208,7 @@ class Game:
         '''
         if self.pick:
             self.turn = not(self.turn)
-        print("This is now " + (PLAYER1 if self.turn else PLAYER2) + "'s turn.")
+        print("This is now " + (self.player1 if self.turn else self.player2) + "'s turn.")
 
     def get_row_col_from_mouse(self, pos):
         '''
