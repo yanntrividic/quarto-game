@@ -8,10 +8,10 @@ import pygame as pg
 from quarto.constants import SQUARE_SIZE, SXOFFSET, SYOFFSET, GXOFFSET, GYOFFSET, DBROWN
 from .types import Shape, Size, Hole, Coloration
 
+
 class Piece:
-    """
+    '''
     This class represent a piece in game.
-    ...
 
     Attributes
     ----------
@@ -27,20 +27,19 @@ class Piece:
         The size of the piece TALL or LITTLE
     hole : Hole(Enum)
         If there is a hole or not in the piece With or WITHOUT
-    
-    """
+    '''
+
     PADDING = 15  # space between the border of a cell and the piece
     OUTLINE = 2  # outline of the piece
     INNER_PADDING = 3  # space between the hole of the piece (if there is one) and the border of the piece
 
-
     def __init__(self, row, col, coloration, shape, size, hole):
-        """
-        Piece's constructor : 
+        '''
+        Piece's constructor :
             -the row and col helps to locate the piece
             -each of the 2^4 pieces is unique this is the reason why it recquires the coloration, shape, size and hole attributes
-             
-        """
+        '''
+
         self.row = row
         self.col = col
 
@@ -53,23 +52,22 @@ class Piece:
         self.y = 0
         self.calc_pos(True)  # initializes the (x,y) position of the piece on the board
 
-  
     def calc_pos(self, init=False):
         '''
         calc_pos calculates the x y position where we need to draw the piece
-        
+
         Parameters
         ----------
         init : Boolean
             if the game is being initialized, init == true, otherwise it's false
         '''
+
         if(init):  # when we first initialize the game
             self.x = SQUARE_SIZE * self.col + SXOFFSET + SQUARE_SIZE // 2
             self.y = SQUARE_SIZE * self.row + SYOFFSET + SQUARE_SIZE // 2
         else:  # when a piece is being put on the board
             self.x = SQUARE_SIZE * self.col + GXOFFSET + SQUARE_SIZE // 2
             self.y = SQUARE_SIZE * self.row + GYOFFSET + SQUARE_SIZE // 2
-
 
     def move_to_gameboard(self, row, col):
         '''
@@ -81,7 +79,7 @@ class Piece:
             the row of the piece
         col : int
             the column of the piece
-        ''' 
+        '''
         self.row = row
         self.col = col
         self.calc_pos()
@@ -121,8 +119,8 @@ class Piece:
         Parameters
         ----------
         verbose : Boolean
-
         '''
+
         if(verbose):
             return(str(self.size) + ", " + str(self.coloration) + ", " + str(self.shape) +
                    ", " + str(self.hole))

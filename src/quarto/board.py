@@ -22,7 +22,7 @@ class Board:
         ----------
         name : String
             The name of the board
-        storage : 
+        storage :
             The storage board
         board: int [][]
             the game board
@@ -47,15 +47,15 @@ class Board:
         self.storage = storage
         self.board = [[0 for _ in range(cols)] for _ in range(rows)]  # _ is a standard placeholder to ignore the warning
 
-        self.pieces_count = 0  
-        self.rows = rows  
-        self.cols = cols  
+        self.pieces_count = 0
+        self.rows = rows
+        self.cols = cols
 
-        self.x_offset = x_offset  
-        self.y_offset = y_offset  
-        self.board_outline = board_outline  
+        self.x_offset = x_offset
+        self.y_offset = y_offset
+        self.board_outline = board_outline
 
-        self.colors = (light_color, dark_color)  
+        self.colors = (light_color, dark_color)
         self.init_pieces()
 
         self.selected_square = None
@@ -64,6 +64,7 @@ class Board:
         '''
         Initialize the pieces in the storage board, the 2^4 differents onew
         '''
+
         if(self.storage):
             row = 0
             for c in Coloration:
@@ -74,11 +75,10 @@ class Board:
                             self.board[row][col] = Piece(row, col, c, sh, si, h)
                             col += 1
                 row += 1
-        #Represent the storage board in the terminal
+        # Represent the storage board in the terminal
         print("Initialization:")
         print(self.__repr__())
 
-    
     def get_piece(self, row, col):
         return(self.board[row][col])
 
@@ -95,8 +95,8 @@ class Board:
             the row of the piece
         col : int
             the column of the piece
+        '''
 
-        '''        
         self.board[row][col] = piece
         piece.move_to_gameboard(row, col)
 
@@ -126,7 +126,7 @@ class Board:
     def get_row_col_from_mouse(self, pos):  # returns a row, a col or false
         '''
         Get the row and column of the selected cell with the mouse
-        
+
         Parameters
         ----------
 
@@ -158,10 +158,10 @@ class Board:
         Check if the board is full
         '''
         for row in range(self.rows):
-            if 0 in self.board[row] :
+            if 0 in self.board[row]:
                 return False
         return True
-            
+
     def _is_winning_line(self, pieces):
         '''
         Check if a line is full of the same symbol
@@ -170,7 +170,6 @@ class Board:
         ----------
         Pieces :  int[]
             the pieces in a line
-            
         '''
         if 0 in pieces:
             return False
@@ -196,7 +195,7 @@ class Board:
             pieces = []
             for row in range(self.rows):
                 pieces.append(self.board[row][col])
-            if not(0 in pieces) :
+            if not(0 in pieces):
                 if self._is_winning_line(pieces):
                     return(True)
 
@@ -206,10 +205,10 @@ class Board:
             for col in range(self.cols):  # check all diagonals
                 pieces.append(self.board[col][col])
                 pieces2.append(self.board[col][self.cols - col - 1])
-            if not(0 in pieces) :
-                if self._is_winning_line(pieces) :
+            if not(0 in pieces):
+                if self._is_winning_line(pieces):
                     return(True)
-            if not(0 in pieces2) :
+            if not(0 in pieces2):
                 if self._is_winning_line(pieces2):
                     return(True)
 
@@ -230,7 +229,7 @@ class Board:
                 if piece == 0:
                     moves.append((row, col))
                     m += str((row, col)) + ", "
-        #Represents the moves on the terminal
+        # Represents the moves on the terminal
         if print:
             print("moves = [" + m + "]")
         return moves

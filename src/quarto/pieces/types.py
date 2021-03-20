@@ -7,6 +7,7 @@ Created on Feb 6, 2021
 from enum import Enum
 import quarto.constants
 
+
 class Coloration(Enum):
     """
     Enumeration for the 2 main colors, brown and beige
@@ -17,7 +18,7 @@ class Coloration(Enum):
 
 class Shape(Enum):
     """
-    Enumeration for the shape of the symbol, circle and square 
+    Enumeration for the shape of the symbol, circle and square
     """
     CIRCLE = "circle"
     SQUARE = "square"
