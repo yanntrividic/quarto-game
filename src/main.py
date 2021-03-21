@@ -6,7 +6,7 @@ Created on Feb 6, 2021
 
 import sys
 
-import pygame.freetype
+from pygame import freetype
 
 import pygame as pg
 from quarto.constants import (HEIGHT, WIDTH, FONT)
@@ -18,7 +18,7 @@ pg.init()
 # pg.display.set_icon(window_logo)
 
 win = pg.display.set_mode((WIDTH, HEIGHT))  # (width, height)
-GAME_FONT = pygame.freetype.SysFont(FONT, 24)
+GAME_FONT = freetype.SysFont(FONT, 24)
 
 fps = 60
 
@@ -41,8 +41,11 @@ def main():
     while run:  # the program will stop when run == false
         clock.tick(fps)  # limits the number of iterations of the while loop
 
-        for event in pg.event.get():  # checks if anything has happened from the user
-            if not game.winner():
+        if not game.winner():
+            if not game.is_human_playing():
+                game.select()
+
+            for event in pg.event.get():  # checks if anything has happened from the user
                 if event.type == pg.QUIT:  # if we click de top right cross, then exit
                     run = False
 
@@ -55,11 +58,12 @@ def main():
                         game.swap_players(clicked_arrow)
 
                     row, col = game.get_row_col_from_mouse(pos)
-                    if (row, col) != (-1, -1):  # if pieces has been taken do nothing
+                    if (row, col) != (-1, -1) and game.is_human_playing():  # if pieces has been taken do nothing
                         game.select(row, col)
                         print(game.__repr__())
 
-            else:  # the user can either reset the game or quit
+        else:  # the user can either reset the game or quit
+            for event in pg.event.get():  # checks if anything has happened from the user
                 if event.type == pg.QUIT:
                     run = False
                 if event.type == pg.MOUSEBUTTONDOWN:
@@ -68,10 +72,10 @@ def main():
                     if game.is_reset_clicked(pos):
                         game.reset()
 
-        game.update()  # TODO: find more elegant way to pass this parameter
+        game.update()
 
     # exit the programme if asked by the user
-    pygame.quit()
+    pg.quit()
     sys.exit()
 
 

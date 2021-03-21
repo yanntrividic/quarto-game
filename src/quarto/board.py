@@ -64,7 +64,6 @@ class Board:
         '''
         Initialize the pieces in the storage board, the 2^4 differents onew
         '''
-
         if(self.storage):
             row = 0
             for c in Coloration:

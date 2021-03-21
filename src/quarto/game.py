@@ -18,6 +18,9 @@ from quarto.constants import (BOARDOUTLINE, SQUARE_SIZE,
                               TXT_X, TXT_Y,
                               X_LEFT_ARROWS, X_RIGHT_ARROWS, Y_TOP_ARROWS, Y_BOT_ARROWS)
 
+from .players.ai import AI_level1, AI_level2, AI_level3
+from .players.human import Human
+
 
 class Game:
     '''
@@ -90,12 +93,19 @@ class Game:
         self.game_board = Board("GameBoard", False, GROWS, GCOLS, GXOFFSET, GYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
         self.storage_board = Board("StorageBoard", True, SROWS, SCOLS, SXOFFSET, SYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
         self.turn = True
-        self.players1 = [PLAYER1, AI1, AI2, AI3]
-        self.players2 = [PLAYER2, AI1, AI2, AI3]
-        self.player1 = 0  # is the index in the players1 array
-        self.player2 = 0
+        self.players1 = self.__init_players(PLAYER1)
+        self.players2 = self.__init_players(PLAYER2)
+        self.player1 = self.players1[0]  # is the index in the players1 array
+        self.player2 = self.players2[0]
         self.pick = True
         self.valid_moves = []  # at first, no piece is selected so no valid moves
+
+    def __init_players(self, p):
+        human = Human(p)
+        ai_1 = AI_level1(AI1)  # TODO add ai
+        ai_2 = AI_level2(AI2)
+        ai_3 = AI_level3(AI3)
+        return [human, ai_1, ai_2, ai_3]
 
     def reset(self):
         '''
@@ -105,9 +115,10 @@ class Game:
         self.__init()
         print(self)
 
-    def select(self, row, col):
+    def select(self, row=-1, col=-1):
         '''
-        Select a piece from the storage board
+        Select a piece from the storage board if no piece is selected, or moves
+        the selected piece to the selected location otherwise
 
         Parameters
         ----------
@@ -119,57 +130,10 @@ class Game:
         # print this as a text on the terminal
         print("Selected piece:", row, col, self.selected_piece)
 
-        if (self.player1 == 0 and self.turn) or (self.player2 == 0 and not self.turn):
-            if self.pick:  # when it's time to pick a piece from the storage board.
-                if self.storage_board.get_piece(row, col) != 0:
-                    self.selected_piece = self.storage_board.get_piece(row, col)
-                    self.valid_moves = self.game_board.get_valid_moves()
-                    self.storage_board.selected_square = (col, row)
-                    self.change_turn()
-                    self.change_pick_move()
-                else:
-                    self.selected_piece = None
-
-            else:
-                result = self.__move(row, col)
-
-                if not result:
-                    print("Invalid position, try again")
-                    return False
-
-                self.selected_piece = None
-                self.valid_moves = []
-                self.storage_board.selected_square = None
-                self.change_turn()
-                self.change_pick_move()
-
-                # FIXME: Unsuccessful attempt at building a random "AI"
-#         if (self.player1 == 1 and self.turn) or (self.player2 == 1 and not self.turn):
-#
-#             rand_col = randint(0, SCOLS - 1)
-#             rand_row = randint(0, SROWS - 1)
-#
-#             if self.pick:
-#                 if self.storage_board.get_piece(rand_row, rand_col) != 0:
-#                     self.selected_piece = self.storage_board.get_piece(row, col)
-#                     self.valid_moves = self.game_board.get_valid_moves()
-#                     self.storage_board.selected_square = self.valid_moves[randint(0, len(self.valid_moves) - 1)]
-#                     self.change_turn()
-#                     self.change_pick_move()
-#                 else:
-#                     self.selected_piece = None
-#
-#             else:
-#                 rand_valid_move = self.valid_moves[randint(0, len(self.valid_moves))]
-#                 sleep(1)
-#                 result = self._move(rand_valid_move[0], rand_valid_move[1])
-#                 self.selected_piece = None
-#                 self.valid_moves = []
-#                 self.storage_board.selected_square = None
-#                 self.change_turn()
-#                 self.change_pick_move()
-
-        return True
+        if self.turn:
+            return self.player1.select(self, row, col)
+        else:
+            return self.player2.select(self, row, col)
 
     def winner(self):
         '''
@@ -183,7 +147,7 @@ class Game:
             return TIE
         return None
 
-    def __move(self, row, col):
+    def move(self, row, col):
         '''
         Moves the selected_piece to the x, y position given as parameter on the game_board
         Parameters
@@ -332,6 +296,12 @@ class Game:
                     return x_arrow, y_arrow
         return None
 
+    def is_human_playing(self):
+        if (self.turn and isinstance(self.player1, Human) or
+           (not self.turn and isinstance(self.player2, Human))):
+            return True
+        return False
+
     def swap_players(self, clicked_arrow):
         '''
         Swaps players according to the arrow that was clicked.
@@ -342,18 +312,18 @@ class Game:
 
         if x_arrow == X_LEFT_ARROWS:
             if y_arrow == Y_TOP_ARROWS and not self.turn:
-                self.player1 = (self.player1 - 1) % len(self.players1)
+                self.player1 = self.players1[(self.players1.index(self.player1) - 1) % len(self.players1)]
                 p = self.__get_player1()
             if y_arrow == Y_BOT_ARROWS and self.turn:
-                self.player2 = (self.player2 - 1) % len(self.players2)
+                self.player2 = self.players2[(self.players2.index(self.player2) - 1) % len(self.players2)]
                 p = self.__get_player2()
 
         else:
             if y_arrow == Y_TOP_ARROWS and not self.turn:
-                self.player1 = (self.player1 + 1) % len(self.players1)
+                self.player1 = self.players1[(self.players1.index(self.player1) + 1) % len(self.players1)]
                 p = self.__get_player1()
             if y_arrow == Y_BOT_ARROWS and self.turn:
-                self.player2 = (self.player2 + 1) % len(self.players2)
+                self.player2 = self.players2[(self.players2.index(self.player2) + 1) % len(self.players2)]
                 p = self.__get_player2()
 
         if p is not None:
@@ -375,10 +345,10 @@ class Game:
         print("This is now time to " + ("pick a" if self.turn else "move the") + " piece.")
 
     def __get_player1(self):
-        return self.players1[self.player1]
+        return self.player1.__name__
 
     def __get_player2(self):
-        return self.players2[self.player2]
+        return self.player2.__name__
 
     def __repr__(self):
         '''
