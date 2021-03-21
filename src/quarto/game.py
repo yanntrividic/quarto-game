@@ -12,7 +12,7 @@ from quarto.board import Board
 from quarto.constants import (BOARDOUTLINE, SQUARE_SIZE,
                               GROWS, GCOLS, GXOFFSET, GYOFFSET,
                               SROWS, SCOLS, SXOFFSET, SYOFFSET,
-                              LGREEN, GREEN, DGREEN, BROWN, DBROWN, WHEAT, PAYAYA, BG,
+                              LGREEN, GREEN, DGREEN, BROWN, DBROWN, WHEAT, PAYAYA, BG, LGRAY,
                               PLAYER1, PLAYER2, AI1, AI2, AI3, TIE,
                               RESET_X, RESET_Y, RESET_WIDTH, RESET_HEIGHT,
                               TXT_X, TXT_Y,
@@ -251,10 +251,10 @@ class Game:
         '''
         Draws the top left texts
         '''
-        text_surface1, _ = self.font.render(self.__get_player1(), WHEAT)
-        text_surface2, _ = self.font.render(self.__get_player2(), WHEAT)
-        self.win.blit(text_surface1, (X_LEFT_ARROWS + 20, Y_TOP_ARROWS - 12))
-        self.win.blit(text_surface2, (X_LEFT_ARROWS + 20, Y_BOT_ARROWS - 12))
+        text_surface1, _ = self.font.render(self.__get_player1(), LGRAY if self.turn else WHEAT)
+        text_surface2, _ = self.font.render(self.__get_player2(), WHEAT if self.turn else LGRAY)
+        self.win.blit(text_surface1, (X_LEFT_ARROWS + 20, Y_TOP_ARROWS - 14))
+        self.win.blit(text_surface2, (X_LEFT_ARROWS + 20, Y_BOT_ARROWS - 14))
 
     def __draw_change_players(self, win):
         '''
@@ -284,10 +284,10 @@ class Game:
                                       (X_RIGHT_ARROWS + 20, Y_BOT_ARROWS - 10 - 7), (X_RIGHT_ARROWS + 20, Y_BOT_ARROWS - 10),
                                       (X_RIGHT_ARROWS, Y_BOT_ARROWS - 10)]
 
-        pg.draw.polygon(win, PAYAYA, points_player1_arrow_left)
-        pg.draw.polygon(win, PAYAYA, points_player1_arrow_right)
-        pg.draw.polygon(win, PAYAYA, points_player2_arrow_left)
-        pg.draw.polygon(win, PAYAYA, points_player2_arrow_right)
+        pg.draw.polygon(win, LGRAY if self.turn else PAYAYA, points_player1_arrow_left)
+        pg.draw.polygon(win, LGRAY if self.turn else PAYAYA, points_player1_arrow_right)
+        pg.draw.polygon(win, PAYAYA if self.turn else LGRAY, points_player2_arrow_left)
+        pg.draw.polygon(win, PAYAYA if self.turn else LGRAY, points_player2_arrow_right)
 
     def __get_arrow_bounding_box(self, x, y):
         '''
@@ -338,23 +338,26 @@ class Game:
         '''
         x_arrow, y_arrow = clicked_arrow
 
+        p = None
+
         if x_arrow == X_LEFT_ARROWS:
-            if y_arrow == Y_TOP_ARROWS:
+            if y_arrow == Y_TOP_ARROWS and not self.turn:
                 self.player1 = (self.player1 - 1) % len(self.players1)
                 p = self.__get_player1()
-            else:
+            if y_arrow == Y_BOT_ARROWS and self.turn:
                 self.player2 = (self.player2 - 1) % len(self.players2)
                 p = self.__get_player2()
 
         else:
-            if y_arrow == Y_TOP_ARROWS:
+            if y_arrow == Y_TOP_ARROWS and not self.turn:
                 self.player1 = (self.player1 + 1) % len(self.players1)
                 p = self.__get_player1()
-            else:
+            if y_arrow == Y_BOT_ARROWS and self.turn:
                 self.player2 = (self.player2 + 1) % len(self.players2)
                 p = self.__get_player2()
 
-        print("Player changed:", p)
+        if p is not None:
+            print("Player changed:", p)
 
     def change_turn(self):
         '''

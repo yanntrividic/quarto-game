@@ -51,6 +51,7 @@ DBROWN = pg.Color((41, 21, 10))  # dark brown
 
 WHEAT = pg.Color('wheat')
 PAYAYA = pg.Color('papayawhip')
+LGRAY = pg.Color((150, 150, 150))
 
 BG = (73, 67, 54)  # BackGround
 FONT = "freesansbold.ttf"  # the font used for the text in the game
