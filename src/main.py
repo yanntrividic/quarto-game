@@ -42,7 +42,7 @@ def main():
         clock.tick(fps)  # limits the number of iterations of the while loop
 
         if not game.winner():
-            if not game.is_human_playing():
+            if not game.is_human_turn():
                 game.select()
 
             for event in pg.event.get():  # checks if anything has happened from the user
@@ -58,7 +58,7 @@ def main():
                         game.swap_players(clicked_arrow)
 
                     row, col = game.get_row_col_from_mouse(pos)
-                    if (row, col) != (-1, -1) and game.is_human_playing():  # if pieces has been taken do nothing
+                    if (row, col) != (-1, -1) and game.is_human_turn():  # if pieces has been taken do nothing
                         game.select(row, col)
                         print(game.__repr__())
 

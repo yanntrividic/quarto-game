@@ -296,7 +296,7 @@ class Game:
                     return x_arrow, y_arrow
         return None
 
-    def is_human_playing(self):
+    def is_human_turn(self):
         if (self.turn and isinstance(self.player1, Human) or
            (not self.turn and isinstance(self.player2, Human))):
             return True
