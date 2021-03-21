@@ -4,8 +4,8 @@ Created on Feb 12, 2021
 @author: yann
 '''
 
-from random import randint
-from time import sleep
+# from random import randint
+# from time import sleep
 
 import pygame as pg
 from quarto.board import Board
@@ -62,7 +62,7 @@ class Game:
         win : Pygame window for display
         The window where the game is displayed
         '''
-        self._init()  # initialization of the baords
+        self.__init()  # initialization of the baords
         self.win = win
         self.font = font
 
@@ -80,16 +80,16 @@ class Game:
         self.game_board.draw(self.win)
         self.storage_board.draw(self.win)
         # self._draw_valid_moves(self.valid_moves)
-        self._draw_players_txt()
-        self._draw_turn_txt()
-        self._draw_change_players(self.win)
+        self.__draw_players_txt()
+        self.__draw_turn_txt()
+        self.__draw_change_players(self.win)
         pg.display.update()
 
-    def _init(self):
+    def __init(self):
         self.selected_piece = None  # if we have selected a piece or not
         self.game_board = Board("GameBoard", False, GROWS, GCOLS, GXOFFSET, GYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
         self.storage_board = Board("StorageBoard", True, SROWS, SCOLS, SXOFFSET, SYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
-        self.turn = True  # TODO: how to handle this ? Technically, we only need a boolean
+        self.turn = True
         self.players1 = [PLAYER1, AI1, AI2, AI3]
         self.players2 = [PLAYER2, AI1, AI2, AI3]
         self.player1 = 0  # is the index in the players1 array
@@ -102,7 +102,7 @@ class Game:
         Resets the game.
         '''
         print("The game is being reset.")
-        self._init()
+        self.__init()
         print(self)
 
     def select(self, row, col):
@@ -131,7 +131,7 @@ class Game:
                     self.selected_piece = None
 
             else:
-                result = self._move(row, col)
+                result = self.__move(row, col)
 
                 if not result:
                     print("Invalid position, try again")
@@ -176,14 +176,14 @@ class Game:
         Says if there is a winner and if there is, says who is the winner
         '''
         if self.game_board.winner():
-            self._draw_reset_button()
+            self.__draw_reset_button()
             return(self.__get_player1() if self.turn else self.__get_player2())
         elif self.game_board.is_full():
-            self._draw_reset_button()
+            self.__draw_reset_button()
             return TIE
         return None
 
-    def _move(self, row, col):
+    def __move(self, row, col):
         '''
         Moves the selected_piece to the x, y position given as parameter on the game_board
         Parameters
@@ -200,7 +200,7 @@ class Game:
             return False
         return True
 
-    def _draw_valid_moves(self, moves):
+    def __draw_valid_moves(self, moves):
         '''
         Displays on the window a circle at position where a move is valid to the player
 
@@ -215,7 +215,7 @@ class Game:
                            (self.game_board.x_offset + int(SQUARE_SIZE * col) + SQUARE_SIZE // 2,
                             self.game_board.y_offset + int(SQUARE_SIZE * row) + SQUARE_SIZE // 2), 15)
 
-    def _draw_turn_txt(self):
+    def __draw_turn_txt(self):
         '''
         Displays on the window a text that tell:
 
@@ -233,7 +233,7 @@ class Game:
         text_surface, _ = self.font.render(txt, DBROWN)
         self.win.blit(text_surface, (TXT_X, TXT_Y))
 
-    def _draw_reset_button(self):
+    def __draw_reset_button(self):
         '''
         Method to display the reset button once the game is over
         '''
@@ -247,16 +247,7 @@ class Game:
         text_surface_reset, _ = self.font.render("RESET", DBROWN)
         self.win.blit(text_surface_reset, (RESET_X + 60, RESET_Y + 25))
 
-    def is_reset_clicked(self, pos):
-        '''
-        Checks if the user clicks the reset button or not
-        '''
-        x, y = pos  # unpacks the mouse button
-        if x > RESET_X and x < RESET_X + RESET_WIDTH and y > RESET_Y and y < RESET_Y + RESET_HEIGHT:
-            return True
-        return False
-
-    def _draw_players_txt(self):
+    def __draw_players_txt(self):
         '''
         Draws the top left texts
         '''
@@ -265,7 +256,7 @@ class Game:
         self.win.blit(text_surface1, (X_LEFT_ARROWS + 20, Y_TOP_ARROWS - 12))
         self.win.blit(text_surface2, (X_LEFT_ARROWS + 20, Y_BOT_ARROWS - 12))
 
-    def _draw_change_players(self, win):
+    def __draw_change_players(self, win):
         '''
         Draws the top right texts (Players, arrows, etc)
         '''
@@ -303,6 +294,31 @@ class Game:
         Returns a stupid bounding box for the arrows, could be better
         '''
         return x - 32, x + 32, y - 17, y + 7
+
+    def get_row_col_from_mouse(self, pos):
+        '''
+        Gets the (row, col) coordinates of where the player clicked depending on
+        the self.pick value (i.e. depending on if it was time to pick a piece or
+        to move one.
+
+        Parameters
+        ----------
+        pos : (int, int)
+            (x, y) position of the pixel clicked.
+        '''
+        if(self.pick):
+            return(self.storage_board.get_row_col_from_mouse(pos))
+        else:
+            return(self.game_board.get_row_col_from_mouse(pos))
+
+    def is_reset_clicked(self, pos):
+        '''
+        Checks if the user clicks the reset button or not
+        '''
+        x, y = pos  # unpacks the mouse button
+        if x > RESET_X and x < RESET_X + RESET_WIDTH and y > RESET_Y and y < RESET_Y + RESET_HEIGHT:
+            return True
+        return False
 
     def is_arrow_clicked(self, pos):
         '''
@@ -347,22 +363,6 @@ class Game:
         if self.pick:
             self.turn = not(self.turn)
         print("This is now " + (self.__get_player1() if self.turn else self.__get_player2()) + "'s turn.")
-
-    def get_row_col_from_mouse(self, pos):
-        '''
-        Gets the (row, col) coordinates of where the player clicked depending on
-        the self.pick value (i.e. depending on if it was time to pick a piece or
-        to move one.
-
-        Parameters
-        ----------
-        pos : (int, int)
-            (x, y) position of the pixel clicked.
-        '''
-        if(self.pick):
-            return(self.storage_board.get_row_col_from_mouse(pos))
-        else:
-            return(self.game_board.get_row_col_from_mouse(pos))
 
     def change_pick_move(self):
         '''
