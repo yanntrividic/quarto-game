@@ -35,9 +35,7 @@ class AI_level1(Player):
 
             game.selected_piece = game.storage_board.get_piece(rand_row, rand_col)
             game.valid_moves = game.game_board.get_valid_moves()
-            game.storage_board.selected_square = (rand_col, rand_row)
-            game.change_turn()
-            game.change_pick_move()
+            game.end_turn((rand_col, rand_row))
 
         else:
             # And in this case we have to move the piece to the storage board
@@ -46,9 +44,7 @@ class AI_level1(Player):
             game.move(rand_move[0], rand_move[1])
             game.selected_piece = None
             game.valid_moves = []
-            game.storage_board.selected_square = None
-            game.change_turn()
-            game.change_pick_move()
+            game.end_turn()
 
         sleep(1)
 

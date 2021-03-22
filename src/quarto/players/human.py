@@ -25,9 +25,7 @@ class Human(Player):
             if game.storage_board.get_piece(row, col) != 0:
                 game.selected_piece = game.storage_board.get_piece(row, col)
                 game.valid_moves = game.game_board.get_valid_moves()
-                game.storage_board.selected_square = (col, row)
-                game.change_turn()
-                game.change_pick_move()
+                game.end_turn((col, row))
             else:
                 game.selected_piece = None
 
@@ -39,8 +37,6 @@ class Human(Player):
 
             game.selected_piece = None
             game.valid_moves = []
-            game.storage_board.selected_square = None
-            game.change_turn()
-            game.change_pick_move()
+            game.end_turn()
 
         return True

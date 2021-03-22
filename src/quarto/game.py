@@ -329,7 +329,7 @@ class Game:
         if p is not None:
             print("Player changed:", p)
 
-    def change_turn(self):
+    def __change_turn(self):
         '''
         Changes the turn value.
         '''
@@ -337,12 +337,17 @@ class Game:
             self.turn = not(self.turn)
         print("This is now " + (self.__get_player1() if self.turn else self.__get_player2()) + "'s turn.")
 
-    def change_pick_move(self):
+    def __change_pick_move(self):
         '''
         Changes the pick value.
         '''
         self.pick = not(self.pick)
         print("This is now time to " + ("pick a" if self.turn else "move the") + " piece.")
+
+    def end_turn(self, selected_square=None):
+        self.storage_board.selected_square = selected_square
+        self.__change_turn()
+        self.__change_pick_move()
 
     def __get_player1(self):
         return self.player1.__name__
