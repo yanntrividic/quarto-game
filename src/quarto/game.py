@@ -13,7 +13,7 @@ from quarto.constants import (BOARDOUTLINE, SQUARE_SIZE,
                               GROWS, GCOLS, GXOFFSET, GYOFFSET,
                               SROWS, SCOLS, SXOFFSET, SYOFFSET,
                               LGREEN, GREEN, DGREEN, BROWN, DBROWN, WHEAT, PAYAYA, BG, LGRAY,
-                              PLAYER1, PLAYER2, AI1, AI2, AI3, TIE,
+                              PLAYER1, PLAYER2, AI1, AI2, TIE,
                               RESET_X, RESET_Y, RESET_WIDTH, RESET_HEIGHT,
                               TXT_X, TXT_Y,
                               X_LEFT_ARROWS, X_RIGHT_ARROWS, Y_TOP_ARROWS, Y_BOT_ARROWS)
@@ -93,19 +93,19 @@ class Game:
         self.game_board = Board("GameBoard", False, GROWS, GCOLS, GXOFFSET, GYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
         self.storage_board = Board("StorageBoard", True, SROWS, SCOLS, SXOFFSET, SYOFFSET, BOARDOUTLINE, LGREEN, GREEN)
         self.turn = True
-        self.players1 = self.__init_players(PLAYER1)
-        self.players2 = self.__init_players(PLAYER2)
+        self.players1 = self.__init_players(PLAYER1, AI1)
+        self.players2 = self.__init_players(PLAYER2, AI2)
         self.player1 = self.players1[0]  # is the index in the players1 array
         self.player2 = self.players2[0]
         self.pick = True
         self.valid_moves = []  # at first, no piece is selected so no valid moves
 
-    def __init_players(self, p):
+    def __init_players(self, p, ai):
         human = Human(p)
-        ai_1 = AI_level1(AI1)  # TODO add ai
-        ai_2 = AI_level2(AI2)
-        ai_3 = AI_level3(AI3)
-        return [human, ai_1, ai_2, ai_3]
+        ai_lvl1 = AI_level1(ai)  # TODO add ai
+        ai_lvl2 = AI_level2(ai)
+        ai_lvl3 = AI_level3(ai)
+        return [human, ai_lvl1, ai_lvl2, ai_lvl3]
 
     def reset(self):
         '''

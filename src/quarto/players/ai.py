@@ -20,7 +20,7 @@ class AI_level1(Player):
         '''
         Constructor
         '''
-        self.__name__ = name
+        self.__name__ = name + " (lvl 1)"
 
     def select(self, game, row, col):
         '''
@@ -62,7 +62,7 @@ class AI_level2(Player):
         '''
         Constructor
         '''
-        self.__name__ = name
+        self.__name__ = name + " (lvl 2)"
 
     def select(self, game, row, col):
         '''
@@ -79,7 +79,7 @@ class AI_level3(Player):
         '''
         Constructor
         '''
-        self.__name__ = name
+        self.__name__ = name + " (lvl 3)"
 
     def select(self, game, row, col):
         '''

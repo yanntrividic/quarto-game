@@ -173,13 +173,13 @@ class Board:
         if 0 in pieces:
             return False
         p = pieces[0]
-        h, s, sh, c = True, True, True, True
+        ho, si, sh, co = True, True, True, True
         for piece in pieces:
-            h = (p.coloration == piece.coloration and h)
-            s = (p.size == piece.size and s)
+            ho = (p.hole == piece.hole and ho)
+            si = (p.size == piece.size and si)
             sh = (p.shape == piece.shape and sh)
-            c = (p.coloration == piece.coloration and c)
-        return(h or s or sh or c)
+            co = (p.coloration == piece.coloration and co)
+        return(ho or si or sh or co)
 
     def __check_all_lines(self):
         '''

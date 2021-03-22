@@ -28,7 +28,9 @@ pg.display.set_caption('Quarto!')
 #  --players 0 the game is initialized with a duel of humans,
 #  --players 1 a duel of level 1 AIs
 #  --players 10 a lvl 1 AI against a human (and the AI starts)
-#  --gendata runs a series of games automatically to generate data about the performances of the players.
+#  --gendata "path" runs a series of games automatically to generate data about the performances of the players and
+#    saves it in the path file
+#  --nbiter 100 is the number of games played
 #   (number of pieces put on the board, result (winner or tie, processing time per turn...)
 
 
