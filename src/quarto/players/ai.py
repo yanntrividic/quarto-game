@@ -25,6 +25,8 @@ class AI_level1(Player):
     def select(self, game, row, col):
         '''
         '''
+        selected_piece = None
+
         if game.pick:
             #  At this point, we have to pick a piece from the storage board
             while True:
@@ -35,7 +37,7 @@ class AI_level1(Player):
 
             game.selected_piece = game.storage_board.get_piece(rand_row, rand_col)
             game.valid_moves = game.game_board.get_valid_moves()
-            game.end_turn((rand_col, rand_row))
+            selected_piece = (rand_col, rand_row)
 
         else:
             # And in this case we have to move the piece to the storage board
@@ -44,8 +46,8 @@ class AI_level1(Player):
             game.move(rand_move[0], rand_move[1])
             game.selected_piece = None
             game.valid_moves = []
-            game.end_turn()
 
+        game.end_turn(selected_piece)
         sleep(1)
 
         return True

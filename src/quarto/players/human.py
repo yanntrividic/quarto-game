@@ -21,13 +21,13 @@ class Human(Player):
     def select(self, game, row, col):
         '''
         '''
+        selected_piece = None
+
         if game.pick:  # when it's time to pick a piece from the storage board.
             if game.storage_board.get_piece(row, col) != 0:
                 game.selected_piece = game.storage_board.get_piece(row, col)
                 game.valid_moves = game.game_board.get_valid_moves()
-                game.end_turn((col, row))
-            else:
-                game.selected_piece = None
+                selected_piece = (col, row)
 
         else:
             result = game.move(row, col)
@@ -37,6 +37,7 @@ class Human(Player):
 
             game.selected_piece = None
             game.valid_moves = []
-            game.end_turn()
+
+        game.end_turn(selected_piece)
 
         return True
