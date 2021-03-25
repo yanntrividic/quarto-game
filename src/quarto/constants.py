@@ -17,7 +17,7 @@ SCOLS, SROWS = 8, 2  # storage board dimensions
 SXOFFSET = WIDTH // 2 - SQUARE_SIZE * SCOLS // 2
 SYOFFSET = HEIGHT - SQUARE_SIZE * (SROWS + 1)
 
-TXT_X, TXT_Y = (40, 250)  # coordinates for the text displayed
+TXT_X, TXT_Y = (55, 200)  # coordinates for the text displayed
 
 RESET_X = TXT_X
 RESET_Y = TXT_Y + 50
@@ -27,8 +27,8 @@ RESET_HEIGHT = 70
 # Coordinates of the arrows
 X_LEFT_ARROWS = 930
 X_RIGHT_ARROWS = 1075
-Y_TOP_ARROWS = 260
-Y_BOT_ARROWS = 300
+Y_TOP_ARROWS = TXT_Y + 60
+Y_BOT_ARROWS = Y_TOP_ARROWS + 50
 
 # P1COLS, P1ROWS = 2, 1 # player1 rectangle dimensions
 # P1XOFFSET = WIDTH - SQUARE_SIZE * (P1COLS + 1)
@@ -51,13 +51,13 @@ DBROWN = pg.Color((41, 21, 10))  # dark brown
 
 WHEAT = pg.Color('wheat')
 PAYAYA = pg.Color('papayawhip')
+LGRAY = pg.Color((150, 150, 150))
 
 BG = (73, 67, 54)  # BackGround
 FONT = "freesansbold.ttf"  # the font used for the text in the game
 
 PLAYER1 = "PLAYER1"  # the two players
 PLAYER2 = "PLAYER2"
-AI1 = "     AI1"  # the 3 artificial intelligence the player can play against
-AI2 = "     AI2"  # the spaces are here to center the text in the middle of the arrows TODO: make it a bit cleaner
-AI3 = "     AI3"
+AI1 = "AI1"  # the 3 artificial intelligence the player can play against
+AI2 = "AI2"  # the 3 artificial intelligence the player can play against
 TIE = "TIE"  # if there is no winner

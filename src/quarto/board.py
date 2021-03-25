@@ -43,7 +43,7 @@ class Board:
         selected_square:
             The square selected by the user
         '''
-        self.name = name
+        self.__name__ = name
         self.storage = storage
         self.board = [[0 for _ in range(cols)] for _ in range(rows)]  # _ is a standard placeholder to ignore the warning
 
@@ -55,16 +55,15 @@ class Board:
         self.y_offset = y_offset
         self.board_outline = board_outline
 
-        self.colors = (light_color, dark_color)
-        self.init_pieces()
+        self.__colors = (light_color, dark_color)
+        self.__init_pieces()
 
         self.selected_square = None
 
-    def init_pieces(self):
+    def __init_pieces(self):
         '''
         Initialize the pieces in the storage board, the 2^4 differents onew
         '''
-
         if(self.storage):
             row = 0
             for c in Coloration:
@@ -140,7 +139,7 @@ class Board:
            (y > self.y_offset)):
             row = (y - self.y_offset) // SQUARE_SIZE
             col = (x - self.x_offset) // SQUARE_SIZE
-            print('Clicked cell: ' + self.name + "[" + str(row) + "," + str(col) + "]")
+            print('Clicked cell: ' + self.__name__ + "[" + str(row) + "," + str(col) + "]")
             return((row, col))
         else:
             return(-1, -1)
@@ -149,7 +148,7 @@ class Board:
         '''
         Check if a player has won
         '''
-        if self._check_all_lines():
+        if self.__check_all_lines():
             return True
         return False
 
@@ -162,7 +161,7 @@ class Board:
                 return False
         return True
 
-    def _is_winning_line(self, pieces):
+    def __is_winning_line(self, pieces):
         '''
         Check if a line is full of the same symbol
 
@@ -174,21 +173,21 @@ class Board:
         if 0 in pieces:
             return False
         p = pieces[0]
-        h, s, sh, c = True, True, True, True
+        ho, si, sh, co = True, True, True, True
         for piece in pieces:
-            h = (p.coloration == piece.coloration and h)
-            s = (p.size == piece.size and s)
+            ho = (p.hole == piece.hole and ho)
+            si = (p.size == piece.size and si)
             sh = (p.shape == piece.shape and sh)
-            c = (p.coloration == piece.coloration and c)
-        return(h or s or sh or c)
+            co = (p.coloration == piece.coloration and co)
+        return(ho or si or sh or co)
 
-    def _check_all_lines(self):
+    def __check_all_lines(self):
         '''
         Check each rows and columns to see if a player has won.
         '''
         for row in range(self.rows):  # checks every line
             if not(0 in self.board[row]):
-                if self._is_winning_line(self.board[row]):
+                if self.__is_winning_line(self.board[row]):
                     return(True)
 
         for col in range(self.cols):  # check every cols
@@ -196,7 +195,7 @@ class Board:
             for row in range(self.rows):
                 pieces.append(self.board[row][col])
             if not(0 in pieces):
-                if self._is_winning_line(pieces):
+                if self.__is_winning_line(pieces):
                     return(True)
 
         if(self.cols == self.rows):  # if we have a square board
@@ -206,10 +205,10 @@ class Board:
                 pieces.append(self.board[col][col])
                 pieces2.append(self.board[col][self.cols - col - 1])
             if not(0 in pieces):
-                if self._is_winning_line(pieces):
+                if self.__is_winning_line(pieces):
                     return(True)
             if not(0 in pieces2):
-                if self._is_winning_line(pieces2):
+                if self.__is_winning_line(pieces2):
                     return(True)
 
     def get_valid_moves(self, print=False):
@@ -234,7 +233,23 @@ class Board:
             print("moves = [" + m + "]")
         return moves
 
-    def draw_cells(self, win):
+    def draw(self, win):
+        '''
+        Draw the board
+
+        Parameters
+        ----------
+        win : Pygame window for display
+        The window where the game is displayed
+        '''
+        self.__draw_cells(win)
+        for row in range(self.rows):
+            for col in range(self.cols):
+                if(self.board[row][col] != 0):
+                    piece = self.board[row][col]
+                    piece.draw(win)
+
+    def __draw_cells(self, win):
         '''
         Draw the cells of the board
 
@@ -250,7 +265,7 @@ class Board:
                 SQUARE_SIZE * self.rows + 2 * self.board_outline)
 
         pg.draw.rect(win, DBROWN, rect)
-        iter_colors = itertools.cycle(self.colors)
+        iter_colors = itertools.cycle(self.__colors)
 
         for x in range(self.cols):
             for y in range(self.rows):
@@ -264,27 +279,11 @@ class Board:
                     next(iter_colors)
             next(iter_colors)
 
-    def draw(self, win):
-        '''
-        Draw the board
-
-        Parameters
-        ----------
-        win : Pygame window for display
-        The window where the game is displayed
-        '''
-        self.draw_cells(win)
-        for row in range(self.rows):
-            for col in range(self.cols):
-                if(self.board[row][col] != 0):
-                    piece = self.board[row][col]
-                    piece.draw(win)
-
     def __repr__(self):
         '''
         represent the object in a string format
         '''
-        s = self.name + ":\n"
+        s = self.__name__ + ":\n"
         for x in range(self.rows):
             for y in range(self.cols):
                 s += ((str(self.board[x][y]) + " ") if(self.board[x][y]) != 0 else "---- ")

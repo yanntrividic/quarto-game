@@ -6,7 +6,7 @@ Created on Feb 6, 2021
 
 import sys
 
-import pygame.freetype
+from pygame import freetype
 
 import pygame as pg
 from quarto.constants import (HEIGHT, WIDTH, FONT)
@@ -18,11 +18,20 @@ pg.init()
 # pg.display.set_icon(window_logo)
 
 win = pg.display.set_mode((WIDTH, HEIGHT))  # (width, height)
-GAME_FONT = pygame.freetype.SysFont(FONT, 24)
+GAME_FONT = freetype.SysFont(FONT, 24)
 
 fps = 60
 
 pg.display.set_caption('Quarto!')
+
+#  TODO: Add options to startup the program.
+#  --players 0 the game is initialized with a duel of humans,
+#  --players 1 a duel of level 1 AIs
+#  --players 10 a lvl 1 AI against a human (and the AI starts)
+#  --gendata "path" runs a series of games automatically to generate data about the performances of the players and
+#    saves it in the path file
+#  --nbiter 100 is the number of games played
+#   (number of pieces put on the board, result (winner or tie, processing time per turn...)
 
 
 def main():
@@ -41,8 +50,11 @@ def main():
     while run:  # the program will stop when run == false
         clock.tick(fps)  # limits the number of iterations of the while loop
 
-        for event in pg.event.get():  # checks if anything has happened from the user
-            if not game.winner():
+        if not game.winner():
+            if not game.is_human_turn():
+                game.select()
+
+            for event in pg.event.get():  # checks if anything has happened from the user
                 if event.type == pg.QUIT:  # if we click de top right cross, then exit
                     run = False
 
@@ -55,11 +67,12 @@ def main():
                         game.swap_players(clicked_arrow)
 
                     row, col = game.get_row_col_from_mouse(pos)
-                    if (row, col) != (-1, -1):  # if pieces has been taken do nothing
+                    if (row, col) != (-1, -1) and game.is_human_turn():  # if pieces has been taken do nothing
                         game.select(row, col)
                         print(game.__repr__())
 
-            else:  # the user can either reset the game or quit
+        else:  # the user can either reset the game or quit
+            for event in pg.event.get():  # checks if anything has happened from the user
                 if event.type == pg.QUIT:
                     run = False
                 if event.type == pg.MOUSEBUTTONDOWN:
@@ -68,10 +81,10 @@ def main():
                     if game.is_reset_clicked(pos):
                         game.reset()
 
-        game.update()  # TODO: find more elegant way to pass this parameter
+        game.update()
 
     # exit the programme if asked by the user
-    pygame.quit()
+    pg.quit()
     sys.exit()
 
 
