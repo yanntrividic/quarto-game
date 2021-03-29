@@ -225,9 +225,14 @@ class Board:
         for row in range(self.rows):
             for col in range(self.cols):
                 piece = self.get_piece(row, col)
-                if piece == 0:
-                    moves.append((row, col))
-                    m += str((row, col)) + ", "
+                if not self.storage :
+                    if piece == 0:
+                        moves.append((row, col))
+                        m += str((row, col)) + ", "
+                else :
+                    if piece != 0:
+                        moves.append((row, col))
+                        m += str((row, col)) + ", "
         # Represents the moves on the terminal
         if print:
             print("moves = [" + m + "]")
