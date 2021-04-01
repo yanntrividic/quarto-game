@@ -80,18 +80,18 @@ class AI_level2(Player):
                     rand_move = not_losing_moves[rand_index]
                     if game.storage_board.get_piece(rand_move[0], rand_move[1]) != 0:
                         break
-            
-            print(str(rand_move[0]),str(rand_move[1]))
+
+            print(str(rand_move[0]), str(rand_move[1]))
             game.selected_piece = game.storage_board.get_piece(rand_move[0], rand_move[1])
             game.valid_moves = game.game_board.get_valid_moves()
-            selected_piece = (rand_move[0], rand_move[1])
+            selected_piece = (rand_move[1], rand_move[0])
 
         else:
             # And in this case we have to move the piece to the storage board
             wining_moves = self.winingMoves(game)
-            if not(len(wining_moves) is 0):
+            if len(wining_moves) != 0:
                 row, col = wining_moves[0]
-                game.move(row,col)
+                game.move(row, col)
             else:
                 rand_move = game.valid_moves[randint(0, len(game.valid_moves) - 1)]
                 game.move(rand_move[0], rand_move[1])
@@ -104,27 +104,27 @@ class AI_level2(Player):
 
         return True
 
-    def winingMoves(self, game, piece = None):
+    def winingMoves(self, game, piece=None):
         '''
         '''
         moves = []
-        for move in game.valid_moves: 
-            if self.isWiningMove(game, move, piece): #try all the valids moves
+        for move in game.valid_moves:
+            if self.isWiningMove(game, move, piece):  # try all the valids moves
                 moves.append(move)
-        return moves            
+        return moves
 
     def isWiningMove(self, game, move, piece):
         row, col = move
-        if self.checkLine(game, game.game_board.board[row], piece):  #check the row
+        if self.checkLine(game, game.game_board.board[row], piece):  # check the row
             return True
 
-        pieces = []                     #check the col
+        pieces = []  # check the col
         for i in range(GROWS):
             pieces.append(game.game_board.board[i][col])
         if self.checkLine(game, pieces, piece):
             return True
 
-        if((row == col) or (col == GCOLS - col - 1)):    #check the diagonals
+        if((row == col) or (col == GCOLS - col - 1)):  # check the diagonals
             pieces = []
             pieces2 = []
             for i in range(GCOLS):
@@ -138,19 +138,19 @@ class AI_level2(Player):
         return False
 
     def checkLine(self, game, line, p):
-        if self.zeroCount(line) == 1 :
+        if self.zeroCount(line) == 1:
             pieces = []
             if p is None:
                 pieces.append(game.selected_piece)
             else:
                 pieces.append(p)
             for piece in line:
-                if not (piece is 0):
+                if piece != 0:
                     pieces.append(piece)
                 return game.game_board._Board__is_winning_line(pieces)
         return False
 
-    def zeroCount(self,pieces):
+    def zeroCount(self, pieces):
         r = 0
         for p in pieces:
             if p == 0:
@@ -162,7 +162,7 @@ class AI_level2(Player):
         losing_moves = []
         valid_moves = game.storage_board.get_valid_moves()
         for move in valid_moves:
-            losing_moves = self.winingMoves(game, game.storage_board.get_piece(move[0],move[1]))
+            losing_moves = self.winingMoves(game, game.storage_board.get_piece(move[0], move[1]))
             if len(losing_moves) == 0:
                 moves.append(move)
         return moves
