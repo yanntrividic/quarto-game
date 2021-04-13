@@ -80,8 +80,6 @@ class AI_level2(Player):
                     rand_move = not_losing_moves[rand_index]
                     if game.storage_board.get_piece(rand_move[0], rand_move[1]) != 0:
                         break
-
-            print(str(rand_move[0]), str(rand_move[1]))
             game.selected_piece = game.storage_board.get_piece(rand_move[0], rand_move[1])
             game.valid_moves = game.game_board.get_valid_moves()
             selected_piece = (rand_move[1], rand_move[0])
@@ -115,6 +113,21 @@ class AI_level2(Player):
 
     def isWiningMove(self, game, move, piece):
         row, col = move
+
+        if row is col :  # check the diagonal top-left -> buttom-right
+            pieces = []
+            for i in range(GCOLS):
+                pieces.append(game.game_board.board[i][i])
+            if self.checkLine(game, pieces, piece):
+                return True
+
+        if row == (GCOLS - col - 1) : #check the diagonal bottom-left -> to-right
+            pieces = []
+            for i in range (GCOLS):
+                pieces.append(game.game_board.board[GROWS - i - 1][i])
+            if self.checkLine(game, pieces, piece):
+                return True
+
         if self.checkLine(game, game.game_board.board[row], piece):  # check the row
             return True
 
@@ -123,17 +136,6 @@ class AI_level2(Player):
             pieces.append(game.game_board.board[i][col])
         if self.checkLine(game, pieces, piece):
             return True
-
-        if((row == col) or (col == GCOLS - col - 1)):  # check the diagonals
-            pieces = []
-            pieces2 = []
-            for i in range(GCOLS):
-                pieces.append(game.game_board.board[col][col])
-                pieces2.append(game.game_board.board[col][GCOLS - col - 1])
-            if self.checkLine(game, pieces, piece):
-                return True
-            if self.checkLine(game, pieces2, piece):
-                return True
 
         return False
 
@@ -147,7 +149,7 @@ class AI_level2(Player):
             for piece in line:
                 if piece != 0:
                     pieces.append(piece)
-                return game.game_board._Board__is_winning_line(pieces)
+            return game.game_board._Board__is_winning_line(pieces)
         return False
 
     def zeroCount(self, pieces):
@@ -183,3 +185,5 @@ class AI_level3(Player):
         '''
         '''
         pass
+
+
