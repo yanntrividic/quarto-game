@@ -4,6 +4,7 @@ Created on Mar 21, 2021
 @author: yann
 '''
 
+from copy import deepcopy
 from random import randint
 from time import sleep
 
@@ -39,9 +40,8 @@ class AI_level1(Player):
             selected_piece = (rand_col, rand_row)
 
         else:
-            # And in this case we have to move the piece to the storage board
-            rand_move = game.valid_moves[randint(0, len(game.valid_moves) - 1)]
-
+            # And in this case we have to move the piece to the game board
+            rand_move = get_random_move(game)
             game.move(rand_move[0], rand_move[1])
             game.selected_piece = None
             game.valid_moves = []
@@ -67,33 +67,34 @@ class AI_level2(Player):
         '''
         '''
         selected_piece = None
-        wining_moves = []
+        winning_moves = []
         not_losing_moves = []
 
         if game.pick:
             #  At this point, we have to pick a piece from the storage board
-            not_losing_moves = self.notLosingMoves(game)
-            rand_move = game.storage_board.get_valid_moves()[0]
-            if not(len(not_losing_moves) == 0):
-                while True:
-                    rand_index = randint(0, len(not_losing_moves) - 1)
-                    rand_move = not_losing_moves[rand_index]
-                    if game.storage_board.get_piece(rand_move[0], rand_move[1]) != 0:
-                        break
+            not_losing_moves = get_not_losing_moves(game)
+            if not not_losing_moves:
+                print("Oh no...")
 
-            print(str(rand_move[0]), str(rand_move[1]))
+            while True:
+                rand_move = get_random_move(game) if not not_losing_moves else not_losing_moves[0]  # not random
+                if game.storage_board.get_piece(rand_move[0], rand_move[1]) != 0:
+                    break
+
             game.selected_piece = game.storage_board.get_piece(rand_move[0], rand_move[1])
             game.valid_moves = game.game_board.get_valid_moves()
             selected_piece = (rand_move[1], rand_move[0])
 
         else:
-            # And in this case we have to move the piece to the storage board
-            wining_moves = self.winingMoves(game)
-            if len(wining_moves) != 0:
-                row, col = wining_moves[0]
+            # And in this case we have to move the piece to the game board
+            winning_moves = get_winning_moves(game)
+
+            if winning_moves:
+                row, col = winning_moves[0]
                 game.move(row, col)
+
             else:
-                rand_move = game.valid_moves[randint(0, len(game.valid_moves) - 1)]
+                rand_move = get_random_move(game, True)
                 game.move(rand_move[0], rand_move[1])
 
             game.selected_piece = None
@@ -104,68 +105,55 @@ class AI_level2(Player):
 
         return True
 
-    def winingMoves(self, game, piece=None):
-        '''
-        '''
-        moves = []
-        for move in game.valid_moves:
-            if self.isWiningMove(game, move, piece):  # try all the valids moves
-                moves.append(move)
-        return moves
 
-    def isWiningMove(self, game, move, piece):
-        row, col = move
-        if self.checkLine(game, game.game_board.board[row], piece):  # check the row
-            return True
+def get_random_move(game, verbose=False):
+    '''Returns a random move
+    '''
+    if game.pick:
+        move = game.storage_board.get_valid_moves()[randint(0, len(game.storage_board.get_valid_moves()) - 1)]
+    else:
+        move = game.valid_moves[randint(0, len(game.valid_moves) - 1)]
+    if verbose:
+        print(move)
+    return move
 
-        pieces = []  # check the col
-        for i in range(GROWS):
-            pieces.append(game.game_board.board[i][col])
-        if self.checkLine(game, pieces, piece):
-            return True
 
-        if((row == col) or (col == GCOLS - col - 1)):  # check the diagonals
-            pieces = []
-            pieces2 = []
-            for i in range(GCOLS):
-                pieces.append(game.game_board.board[col][col])
-                pieces2.append(game.game_board.board[col][GCOLS - col - 1])
-            if self.checkLine(game, pieces, piece):
-                return True
-            if self.checkLine(game, pieces2, piece):
-                return True
+def get_winning_moves(game, piece=None):
+    '''Returns a list of moves that can be done by the AI to win (used when it's time to move the piece)
+    '''
+    moves = []
+    for move in game.game_board.get_valid_moves():  # we get all the valid moves
+        if is_winning_move(game, move, game.selected_piece if not piece else piece):  # try all the valids moves
+            # and if the move results in a win, we append it to the list
+            moves.append(move)
+    return moves
 
-        return False
 
-    def checkLine(self, game, line, p):
-        if self.zeroCount(line) == 1:
-            pieces = []
-            if p is None:
-                pieces.append(game.selected_piece)
-            else:
-                pieces.append(p)
-            for piece in line:
-                if piece != 0:
-                    pieces.append(piece)
-                return game.game_board._Board__is_winning_line(pieces)
-        return False
+def is_winning_move(game, move, piece):
+    '''Checks is a move is winning or not
+    '''
+    row, col = move
 
-    def zeroCount(self, pieces):
-        r = 0
-        for p in pieces:
-            if p == 0:
-                r += 1
-        return r
+    game_board_copy = deepcopy(game.game_board)  #  we generate a copy of the game_board
+    piece_copy = deepcopy(piece)
 
-    def notLosingMoves(self, game):
-        moves = []
-        losing_moves = []
-        valid_moves = game.storage_board.get_valid_moves()
-        for move in valid_moves:
-            losing_moves = self.winingMoves(game, game.storage_board.get_piece(move[0], move[1]))
-            if len(losing_moves) == 0:
-                moves.append(move)
-        return moves
+    game_board_copy.put_piece(piece_copy, row, col)  #  and put the selected piece in the selected spot
+    return game_board_copy.winner()  #  and return the result
+
+
+def get_not_losing_moves(game):
+    ''' Returns a list of moves that won't make the other player win (used when it's time to pick)
+    '''
+    not_losing_moves = []
+    valid_moves = game.storage_board.get_valid_moves()  # all the moves possible
+
+    for move in valid_moves:  #  for each move
+        game.selected_piece = game.storage_board.get_piece(move[0], move[1])  # we select the piece
+        losing_moves = get_winning_moves(game)  # and check if the piece can result in a loss
+        if not losing_moves:  # if it can't result in a loss
+            not_losing_moves.append(move)  #  we add it to the possible plays
+
+    return not_losing_moves
 
 
 class AI_level3(Player):
