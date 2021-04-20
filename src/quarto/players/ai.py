@@ -54,7 +54,8 @@ class AI_level1(Player):
 
 class AI_level2(Player):
     '''
-    classdocs
+    This AI uses a very naive algorithm that allows it to verify if the piece that was given to it can allow it to win,
+    and which won't pick a piece if it allows the opponent to immediately win (unless there is no other choice).
     '''
 
     def __init__(self, name):
@@ -101,6 +102,7 @@ class AI_level2(Player):
             game.valid_moves = []
 
         game.end_turn(selected_piece)
+        print("heuristic of current state: " + str(heuristic(game)))
         sleep(1)
 
         return True
@@ -158,7 +160,7 @@ def get_not_losing_moves(game):
 
 class AI_level3(Player):
     '''
-    classdocs
+    This AI uses the minmax algorithm.
     '''
 
     def __init__(self, name):
@@ -171,3 +173,81 @@ class AI_level3(Player):
         '''
         '''
         pass
+
+
+def can_line_win(game, line):
+    '''
+    Checks if a line has the potential to win (if one of the available pieces can fill it to make it a winning line)
+    
+    game -- a Game object
+    line -- a list of four (x, y) coordinates
+    '''
+    count, pos = count_zeros_in_line(game, line)
+    if count == 1:  # meaning one piece is missing
+        for row in game.storage_board.board:  # for each row in the storage board
+            for piece in row:  # and each piece in each row
+                # we check if this move would be winning
+
+                col, row = pos
+                inversed_pos = row, col  #  inversion of the order
+
+                if piece != 0 and is_winning_move(game, inversed_pos, piece):  # pos might have to be inverted
+                    # print("winning pos found =", pos)
+                    return pos
+    # if nothing was found, we return False
+    return False
+
+
+def count_zeros_in_line(game, line):
+    count = 0
+    pos = (-1, -1)
+    for col, row in line:
+        if game.game_board.board[row][col] == 0:
+            count += 1
+            pos = (col, row)
+    return count, pos
+
+
+def heuristic(game):
+    '''
+    Heuristic function for the level 3 and 4 AIs. The return values can range from 0 to 7 depending on the number
+    of lines that result in a win if the right piece is put during the next turn.
+    '''
+
+    # FIXME: apparently, the function doesn't seem to work with small pieces
+    # FIXME: in some cases, winning positions are not detected
+
+    h = set()  # heuristics value
+
+    # Rows and columns
+    for col in range(GCOLS):
+        row_line = []
+        col_line = []
+
+        for row in range(GROWS):
+            col_line.append((col, row))
+            row_line.append((row, col))
+
+        h = __update_pos_set(game, row_line, h)
+        h = __update_pos_set(game, col_line, h)
+
+    #  Diagonals
+    top_left_diagonal_line = []
+    top_right_diagonal_line = []
+
+    for col in range(GCOLS):  #  for diagonals
+        top_left_diagonal_line.append((col, col))
+        top_right_diagonal_line.append((GCOLS - col - 1, col))
+
+    h = __update_pos_set(game, top_right_diagonal_line, h)
+    h = __update_pos_set(game, top_left_diagonal_line, h)
+
+    # print(h)
+    return len(h)
+
+
+def __update_pos_set(game, line, set):
+    pos = can_line_win(game, line)  # false is no pos, the pos otherwise
+    if pos:
+        set.update({pos})  #  adds pos to the set, if it's already in there, nothing changes
+    return set

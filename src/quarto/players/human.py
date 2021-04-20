@@ -4,6 +4,8 @@ Created on Mar 21, 2021
 @author: yann
 '''
 
+from .ai import heuristic
+
 from .player import Player
 
 
@@ -39,5 +41,6 @@ class Human(Player):
             game.valid_moves = []
 
         game.end_turn(selected_piece)
+        print("\t\theuristic of current state: " + str(heuristic(game)))
 
         return True
