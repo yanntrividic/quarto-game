@@ -41,6 +41,6 @@ class Human(Player):
             game.valid_moves = []
 
         game.end_turn(selected_piece)
-        print("\t\theuristic of current state: " + str(heuristic(game)))
+        print("\t\theuristic of the current state: " + str(heuristic(game)))
 
         return True

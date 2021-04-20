@@ -102,7 +102,7 @@ class AI_level2(Player):
             game.valid_moves = []
 
         game.end_turn(selected_piece)
-        print("heuristic of current state: " + str(heuristic(game)))
+        print("heuristic of the current state: " + str(heuristic(game)))
         sleep(1)
 
         return True
@@ -213,9 +213,6 @@ def heuristic(game):
     Heuristic function for the level 3 and 4 AIs. The return values can range from 0 to 7 depending on the number
     of lines that result in a win if the right piece is put during the next turn.
     '''
-
-    # FIXME: apparently, the function doesn't seem to work with small pieces
-    # FIXME: in some cases, winning positions are not detected
 
     h = set()  # heuristics value
 
