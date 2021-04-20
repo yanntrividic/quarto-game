@@ -212,6 +212,8 @@ def heuristic(game):
     '''
     Heuristic function for the level 3 and 4 AIs. The return values can range from 0 to 7 depending on the number
     of lines that result in a win if the right piece is put during the next turn.
+    
+    game -- a Game object at the current state of the game
     '''
 
     h = set()  # heuristics value
