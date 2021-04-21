@@ -211,7 +211,7 @@ class Board:
                 if self.__is_winning_line(pieces2):
                     return(True)
 
-    def get_valid_moves(self, print=False):
+    def get_valid_moves(self, verbose=False):
         '''
         Check which are the valid moves
 
@@ -225,16 +225,16 @@ class Board:
         for row in range(self.rows):
             for col in range(self.cols):
                 piece = self.get_piece(row, col)
-                if not self.storage :
+                if not self.storage:
                     if piece == 0:
                         moves.append((row, col))
                         m += str((row, col)) + ", "
-                else :
+                else:
                     if piece != 0:
                         moves.append((row, col))
                         m += str((row, col)) + ", "
         # Represents the moves on the terminal
-        if print:
+        if verbose:
             print("moves = [" + m + "]")
         return moves
 
