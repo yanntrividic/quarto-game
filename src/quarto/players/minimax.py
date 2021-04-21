@@ -25,7 +25,6 @@ def minimax(game, depth: int, max_player: bool, playing_player: Player):
     depth -- int that represents the maximum depth we will explore
     max_player -- the player trying to maximize its evaluation, True if maximizing, False if minimizing
     playing_player -- the actual Player object for which we run the calculation
-    pick -- bool, True when it's time to pick a piece, False when it's time to place a piece
 
     returns --
     A move, i.e. a tuple of (x, y) coordinates.
@@ -35,7 +34,7 @@ def minimax(game, depth: int, max_player: bool, playing_player: Player):
 
     # Terminal state or max depth reached
     if depth == 0 or game.winner():
-        return game
+        return game  #  FIXME: return eval value
 
     # TODO: we need to discriminate two cases : when we have to put a piece on the board, and when we have to pick a piece
 
@@ -46,7 +45,7 @@ def minimax(game, depth: int, max_player: bool, playing_player: Player):
     # When it's time to put a piece on the board, we must calculate what would maximize the heuristic and keep
     # the best one
 
-    # FIXME: THE REST OF THIS FUNCTION IS NOT FINISHED AT ALL OVERTHINK IT
+    # FIXME: THE REST OF THIS FUNCTION IS NOT FINISHED AT ALL DONT OVERTHINK IT
     if max_player:  #  meaning we are trying to maximize the evaluation
         max_eval = float('-inf')
         best_move = None
