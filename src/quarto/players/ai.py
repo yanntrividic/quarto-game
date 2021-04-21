@@ -9,6 +9,7 @@ from random import randint
 from time import sleep
 
 from ..constants import (SCOLS, SROWS, GCOLS, GROWS)
+from .minimax import minimax
 from .player import Player
 
 
@@ -163,29 +164,56 @@ class AI_level3(Player):
     This AI uses the minmax algorithm.
     '''
 
-    def __init__(self, name):
+    def __init__(self, name, depth):
         '''
         Constructor
         '''
         self.__name__ = name + " (lvl 3)"
+        self.depth = depth
 
     def select(self, game, row, col):
         '''
+        This select method is a bit different from the past ones as we don't give control back to the game after the
+        piece is placed, we don't the placing and the picking at once
         '''
-        pass
+
+        # TODO: make the first move random (otherwise the algorithm won't work because we need to play a selected piece
+        # before picking a piece
+
+        position_played, picked_piece = minimax(game, self.depth, True, self)
+        #  the position played and the picked piece are both returned at the same time
+
+        print("position_played=", position_played, ", picked_piece=", picked_piece)
+
+        game.move(position_played[0], position_played[1])
+
+        game.selected_piece = None
+        game.valid_moves = []
+        game.end_turn(None)
+
+        game.selected_piece = game.storage_board.get_piece(picked_piece[0], picked_piece[1])
+        game.valid_moves = game.game_board.get_valid_moves()
+
+        selected_piece = (picked_piece[1], picked_piece[0])
+        game.end_turn(selected_piece)
+
+        print("heuristic of the current state: " + str(heuristic(game)))
+        sleep(1)
+
+        return True
 
 
 def can_line_win(game, line):
     '''
     Checks if a line has the potential to win (if one of the available pieces can fill it to make it a winning line)
-    
+
     game -- a Game object
     line -- a list of four (x, y) coordinates
     '''
     count, pos = count_zeros_in_line(game, line)
     if count == 1:  # meaning one piece is missing
         for row in game.storage_board.board:  # for each row in the storage board
-            for piece in row:  # and each piece in each row
+            for piece in row:  # and each piece in each rowhttps://github.com/marienfressinaud/AI_quarto
                 # we check if this move would be winning
 
                 col, row = pos
@@ -212,7 +240,7 @@ def heuristic(game):
     '''
     Heuristic function for the level 3 and 4 AIs. The return values can range from 0 to 7 depending on the number
     of lines that result in a win if the right piece is put during the next turn.
-    
+
     game -- a Game object at the current state of the game
     '''
 

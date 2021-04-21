@@ -1,3 +1,7 @@
+## TODO:
+Le readme, installation/utilisation
+Fichier requirements.txt
+
 # quarto-game
 
 **Authors**\
@@ -5,6 +9,17 @@ Elie Duboux\
 Yann Trividic
 
 A Python implementation of the board game *Quarto!* with an artificial intelligence playing against the user. This program is partly based on the work of Mohrmann et al. (2013) and on the video tutorial of the YouTube channel *Tech with Tim*
+
+
+## Règles du jeu
+
+*Quarto!* est un jeu de plateau à deux joueurs et se jouant au tour par tour.
+
+Pour gagner au *Quarto!*, l'objectif est d'aligner quatre pièces ayant au moins un point commun entre elles. La principale singularité du jeu est que ce n'est pas le joueur qui choisit la pièce qu'il va placer : c'est son adversaire.
+
+Le plateau est constitué de seize cases : quatre lignes et quatre colonnes. Les seize pièces du jeu, toutes différentes, possèdent chacune quatre caractères distincts : haute ou basse, ronde ou carrée, claire ou foncée, pleine ou creuse. Chaque tour se déroule de la manière suivante : le premier joueur choisit une pièce et la donne à son adversaire, qui doit la jouer sur une case libre. Le tour d'après, les rôles s'inversent. Une fois que quatre pièces portant une caractéristique en commun sont alignées (sur une ligne, une diagonale ou une colonne), alors le joueur qui a posé la dernière pièce gagne.
+
+
 
 ## Structure des états et représentation PEAS
 

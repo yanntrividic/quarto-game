@@ -104,7 +104,7 @@ class Game:
         human = Human(p)
         ai_lvl1 = AI_level1(ai)  # TODO add ai
         ai_lvl2 = AI_level2(ai)
-        ai_lvl3 = AI_level3(ai)
+        ai_lvl3 = AI_level3(ai, 1)
         return [human, ai_lvl1, ai_lvl2, ai_lvl3]
 
     def reset(self):
