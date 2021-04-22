@@ -8,8 +8,8 @@ Created on Feb 12, 2021
 # from time import sleep
 
 import pygame as pg
-from quarto.board import Board
-from quarto.constants import (BOARDOUTLINE, SQUARE_SIZE,
+from .board import Board
+from .constants import (BOARDOUTLINE, SQUARE_SIZE,
                               GROWS, GCOLS, GXOFFSET, GYOFFSET,
                               SROWS, SCOLS, SXOFFSET, SYOFFSET,
                               LGREEN, GREEN, DGREEN, BROWN, DBROWN, WHEAT, PAYAYA, BG, LGRAY,

@@ -5,7 +5,7 @@ Created on Feb 6, 2021
 '''
 
 import pygame as pg
-from quarto.constants import SQUARE_SIZE, SXOFFSET, SYOFFSET, GXOFFSET, GYOFFSET, DBROWN
+from ..constants import SQUARE_SIZE, SXOFFSET, SYOFFSET, GXOFFSET, GYOFFSET, DBROWN
 from .types import Shape, Size, Hole, Coloration
 
 

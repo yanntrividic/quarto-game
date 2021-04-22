@@ -7,9 +7,9 @@ Created on Feb 6, 2021
 import itertools
 
 import pygame as pg
-from quarto.constants import DBROWN, SQUARE_SIZE
-from quarto.pieces.piece import Piece
-from quarto.pieces.types import Coloration, Hole, Shape, Size
+from .constants import DBROWN, SQUARE_SIZE
+from .pieces.piece import Piece
+from .pieces.types import Coloration, Hole, Shape, Size
 
 
 class Board:
@@ -161,6 +161,7 @@ class Board:
                 return False
         return True
 
+    
     def __is_winning_line(self, pieces):
         '''
         Check if a line is full of the same symbol

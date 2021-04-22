@@ -6,6 +6,7 @@ Created on Apr 20, 2021
 
 from copy import deepcopy
 from .player import Player
+from .ai import heuristic
 
 EVAL_LOSS = -1
 EVAL_DRAW = 8  #  this draw value only matters in the endgame, where the heuristic doesn't matter anymore
@@ -34,7 +35,7 @@ def minimax(game, depth: int, max_player: bool, playing_player: Player):
 
     # Terminal state or max depth reached
     if depth == 0 or game.winner():
-        return game  #  FIXME: return eval value
+        return heuristic(game), game  #TODO: not sure about the heuristic is implemented in the correct way
 
     # TODO: we need to discriminate two cases : when we have to put a piece on the board, and when we have to pick a piece
 
