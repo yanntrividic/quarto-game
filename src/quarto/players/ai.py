@@ -4,13 +4,13 @@ Created on Mar 21, 2021
 @author: yann
 '''
 
-from copy import deepcopy
 from random import randint
 from time import sleep
 
-from ..constants import (SCOLS, SROWS, GCOLS, GROWS)
-from .minimax import minimax
+from ..constants import (SCOLS, SROWS)
+from .minimax import minimax, heuristic
 from .player import Player
+from .utils import get_not_losing_moves, get_winning_moves
 
 
 class AI_level1(Player):
@@ -121,44 +121,6 @@ def get_random_move(game, verbose=False):
     return move
 
 
-def get_winning_moves(game, piece=None):
-    '''Returns a list of moves that can be done by the AI to win (used when it's time to move the piece)
-    '''
-    moves = []
-    for move in game.game_board.get_valid_moves():  # we get all the valid moves
-        if is_winning_move(game, move, game.selected_piece if not piece else piece):  # try all the valids moves
-            # and if the move results in a win, we append it to the list
-            moves.append(move)
-    return moves
-
-
-def is_winning_move(game, move, piece):
-    '''Checks is a move is winning or not
-    '''
-    row, col = move
-
-    game_board_copy = deepcopy(game.game_board)  #  we generate a copy of the game_board
-    piece_copy = deepcopy(piece)
-
-    game_board_copy.put_piece(piece_copy, row, col)  #  and put the selected piece in the selected spot
-    return game_board_copy.winner()  #  and return the result
-
-
-def get_not_losing_moves(game):
-    ''' Returns a list of moves that won't make the other player win (used when it's time to pick)
-    '''
-    not_losing_moves = []
-    valid_moves = game.storage_board.get_valid_moves()  # all the moves possible
-
-    for move in valid_moves:  #  for each move
-        game.selected_piece = game.storage_board.get_piece(move[0], move[1])  # we select the piece
-        losing_moves = get_winning_moves(game)  # and check if the piece can result in a loss
-        if not losing_moves:  # if it can't result in a loss
-            not_losing_moves.append(move)  #  we add it to the possible plays
-
-    return not_losing_moves
-
-
 class AI_level3(Player):
     '''
     This AI uses the minmax algorithm.
@@ -177,14 +139,23 @@ class AI_level3(Player):
         piece is placed, we don't the placing and the picking at once
         '''
 
-        # TODO: make the first move random (otherwise the algorithm won't work because we need to play a selected piece
-        # before picking a piece
+        # FIXME: might not work
+        # before picking the first piece
+        if len(game.game_board.get_valid_moves()) == SCOLS * SROWS and game.pick:
+            move = get_random_move(game)
+            print(move)
+            game.selected_piece = game.storage_board.get_piece(move[0], move[1])
+            game.valid_moves = game.game_board.get_valid_moves()
+            game.end_turn(game.selected_piece)
+            return True
 
-        position_played, picked_piece = minimax(game, self.depth, True, self)
+        result = minimax(game, self.depth, True, self)
+        position_played, picked_piece = result[1]
         #  the position played and the picked piece are both returned at the same time
 
-        print("position_played=", position_played, ", picked_piece=", picked_piece)
+        print("position_played=", position_played, ", picked_piece=", picked_piece, ", final_eval=", result[0])
 
+        print(game.game_board)
         game.move(position_played[0], position_played[1])
 
         game.selected_piece = None
@@ -201,80 +172,3 @@ class AI_level3(Player):
         sleep(1)
 
         return True
-
-
-def can_line_win(game, line):
-    '''
-    Checks if a line has the potential to win (if one of the available pieces can fill it to make it a winning line)
-
-    game -- a Game object
-    line -- a list of four (x, y) coordinates
-    '''
-    count, pos = count_zeros_in_line(game, line)
-    if count == 1:  # meaning one piece is missing
-        for row in game.storage_board.board:  # for each row in the storage board
-            for piece in row:  # and each piece in each rowhttps://github.com/marienfressinaud/AI_quarto
-                # we check if this move would be winning
-
-                col, row = pos
-                inversed_pos = row, col  #  inversion of the order
-
-                if piece != 0 and is_winning_move(game, inversed_pos, piece):  # pos might have to be inverted
-                    # print("winning pos found =", pos)
-                    return pos
-    # if nothing was found, we return False
-    return False
-
-
-def count_zeros_in_line(game, line):
-    count = 0
-    pos = (-1, -1)
-    for col, row in line:
-        if game.game_board.board[row][col] == 0:
-            count += 1
-            pos = (col, row)
-    return count, pos
-
-
-def heuristic(game):
-    '''
-    Heuristic function for the level 3 and 4 AIs. The return values can range from 0 to 7 depending on the number
-    of lines that result in a win if the right piece is put during the next turn.
-
-    game -- a Game object at the current state of the game
-    '''
-
-    h = set()  # heuristics value
-
-    # Rows and columns
-    for col in range(GCOLS):
-        row_line = []
-        col_line = []
-
-        for row in range(GROWS):
-            col_line.append((col, row))
-            row_line.append((row, col))
-
-        h = __update_pos_set(game, row_line, h)
-        h = __update_pos_set(game, col_line, h)
-
-    #  Diagonals
-    top_left_diagonal_line = []
-    top_right_diagonal_line = []
-
-    for col in range(GCOLS):  #  for diagonals
-        top_left_diagonal_line.append((col, col))
-        top_right_diagonal_line.append((GCOLS - col - 1, col))
-
-    h = __update_pos_set(game, top_right_diagonal_line, h)
-    h = __update_pos_set(game, top_left_diagonal_line, h)
-
-    # print(h)
-    return len(h)
-
-
-def __update_pos_set(game, line, set):
-    pos = can_line_win(game, line)  # false is no pos, the pos otherwise
-    if pos:
-        set.update({pos})  #  adds pos to the set, if it's already in there, nothing changes
-    return set

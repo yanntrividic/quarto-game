@@ -10,13 +10,13 @@ Created on Feb 12, 2021
 import pygame as pg
 from .board import Board
 from .constants import (BOARDOUTLINE, SQUARE_SIZE,
-                              GROWS, GCOLS, GXOFFSET, GYOFFSET,
-                              SROWS, SCOLS, SXOFFSET, SYOFFSET,
-                              LGREEN, GREEN, DGREEN, BROWN, DBROWN, WHEAT, PAYAYA, BG, LGRAY,
-                              PLAYER1, PLAYER2, AI1, AI2, TIE,
-                              RESET_X, RESET_Y, RESET_WIDTH, RESET_HEIGHT,
-                              TXT_X, TXT_Y,
-                              X_LEFT_ARROWS, X_RIGHT_ARROWS, Y_TOP_ARROWS, Y_BOT_ARROWS)
+                        GROWS, GCOLS, GXOFFSET, GYOFFSET,
+                        SROWS, SCOLS, SXOFFSET, SYOFFSET,
+                        LGREEN, GREEN, DGREEN, BROWN, DBROWN, WHEAT, PAYAYA, BG, LGRAY,
+                        PLAYER1, PLAYER2, AI1, AI2, TIE,
+                        RESET_X, RESET_Y, RESET_WIDTH, RESET_HEIGHT,
+                        TXT_X, TXT_Y,
+                        X_LEFT_ARROWS, X_RIGHT_ARROWS, Y_TOP_ARROWS, Y_BOT_ARROWS)
 
 from .players.ai import AI_level1, AI_level2, AI_level3
 from .players.human import Human
@@ -104,7 +104,7 @@ class Game:
         human = Human(p)
         ai_lvl1 = AI_level1(ai)  # TODO add ai
         ai_lvl2 = AI_level2(ai)
-        ai_lvl3 = AI_level3(ai, 1)
+        ai_lvl3 = AI_level3(ai, 2)
         return [human, ai_lvl1, ai_lvl2, ai_lvl3]
 
     def reset(self):

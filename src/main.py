@@ -9,8 +9,8 @@ import sys
 from pygame import freetype
 
 import pygame as pg
-from .quarto.constants import (HEIGHT, WIDTH, FONT)
-from .quarto.game import Game
+from quarto.constants import (HEIGHT, WIDTH, FONT)
+from quarto.game import Game
 
 # TODO: write the doc according to this standard : https://realpython.com/documenting-python-code/#commenting-code-via-type-hinting-python-35
 pg.init()
