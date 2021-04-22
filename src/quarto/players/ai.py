@@ -149,7 +149,7 @@ class AI_level3(Player):
             game.end_turn(game.selected_piece)
             return True
 
-        result = minimax(game, self.depth, True, self)
+        result = minimax(game, self.depth, True)
         position_played, picked_piece = result[1]
         #  the position played and the picked piece are both returned at the same time
 

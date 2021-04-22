@@ -35,43 +35,31 @@ def minimax(game, depth: int, max_player: bool, move=None):
     If not pick: the move is the cell from the game board in which to put the selected piece in.
     '''
 
+    print("\n\n", "\t" * abs(2 - depth), "ENTERING MINIMAX DEPTH", depth, "MAX =", max_player)
+    if move:
+        print("\t" * abs(2 - depth), "played position:", move[0], "picked piece:", move[1])
+    print("\t" * abs(2 - depth), "Simulated game_board:\n" + str(game.game_board))
+    print("\t" * abs(2 - depth), "Simulated storage_board:\n" + str(game.storage_board))
+
     # Terminal state or max depth reached
     if depth == 0 or game.winner():
-        return state_eval(game), move  # TODO: not sure about the heuristic is implemented in the correct way
-
-    # TODO: we need to discriminate two cases : when we have to put a piece on the board, and when we have to pick a piece
-
-    # When it's time to pick a piece, we have to (according to Marien Fressinaud):
-    # 1) for each available pieces, maximize its position on the board
-    # 2) minimize the evaluation (i.e. select the less dangerous piece)
-
-    # When it's time to put a piece on the board, we must calculate what would maximize the heuristic and keep
-    # the best one
-
-    # FIXME: THE REST OF THIS FUNCTION IS NOT FINISHED AT ALL DONT OVERTHINK IT
-    saved_game_board = game.game_board
-    saved_storage_board = game.storage_board
+        return state_eval(game), move  # * (-1 if max_player else 1) ??, move
 
     if max_player:  #  meaning we are trying to maximize the evaluation
         max_eval = float('-inf')
         best_move = None
         for move in get_all_moves(game, False):  #  we get all the positions in which we can put the current piece
-            print(move)
+            # print(move)
             for piece in get_all_moves(game, True):  # and then we get all the pickable pieces
 
                 # TODO: we might have to store the original game&storage boards somewhere before doing that
-                game.game_board, game.storage_board = simulate_move(game, move, piece)
-                print("MAX simulated game_board:\n" + str(game.game_board))
-                print("MAX simulated storage_board:\n" + str(game.storage_board))
 
                 evaluation = minimax(game, depth - 1, False, (move, piece))[0]  # we get the evaluation at index 0
                 max_eval = max(max_eval, evaluation)
+                print("\t" * abs(2 - depth), "evaluation ", evaluation)
                 if max_eval == evaluation:
-                    print("\t\tmax_evaluation ", evaluation)
+                    print("\t" * abs(2 - depth), "max_evaluation updated:", max_eval)
                     best_move = (move, piece)  # we consider moves as a tuple
-
-                game.game_board = saved_game_board
-                game.storage_board = saved_storage_board
 
         return max_eval, best_move
 
@@ -79,22 +67,18 @@ def minimax(game, depth: int, max_player: bool, move=None):
         min_eval = float('inf')
         best_move = None
         for move in get_all_moves(game, False):  #  we get all the positions in which we can put the current piece
-            print(get_all_moves(game, False))
+            # print(get_all_moves(game, False))
             for piece in get_all_moves(game, True):  # and then we get all the pickable pieces
 
                 # TODO: we might have to store the original game&storage boards somewhere before doing that
-                game.game_board, game.storage_board = simulate_move(game, move, piece)
-                print("MIN simulated game_board:\n" + str(game.game_board))
-                print("MIN simulated storage_board:\n" + str(game.storage_board))
 
-                evaluation = minimax(game, depth - 1, True, (move, piece))[0]  # negamax with the - sign
+                evaluation = -minimax(game, depth - 1, True, (move, piece))[0]  # negamax with the - sign
                 min_eval = min(min_eval, evaluation)
-                if min_eval == evaluation:
-                    print("\t\tmin_evaluation ", evaluation)
-                    best_move = (move, piece)
+                print("\t" * abs(2 - depth), "evaluation ", evaluation)
 
-                game.game_board = saved_game_board
-                game.storage_board = saved_storage_board
+                if min_eval == evaluation:
+                    print("\t" * abs(2 - depth), "min_evaluation updated:", min_eval)
+                    best_move = (move, piece)
 
         return min_eval, best_move
 
@@ -151,15 +135,15 @@ def get_all_moves(game, pick):
         coor_selected_piece_to_revove = get_coor_selected_piece(game)
         valid_moves = deepcopy(game.storage_board.get_valid_moves())
 
-        print("piece to remove:", game.selected_piece, "coor_selected_piece_to_remove", coor_selected_piece_to_revove)
+        # print("piece to remove:", game.selected_piece, "coor_selected_piece_to_remove", coor_selected_piece_to_revove)
         if coor_selected_piece_to_revove:
             valid_moves.remove(coor_selected_piece_to_revove)
 
-        print("valid_moves atfer removal:", valid_moves)
+        # print("valid_moves atfer removal:", valid_moves)
 
         return valid_moves  # all the moves possible
     else:
-        print("get_all_moves game_board: ", game.game_board.get_valid_moves())
+        # print("get_all_moves game_board: ", game.game_board.get_valid_moves())
         return game.game_board.get_valid_moves()
 
 
