@@ -7,8 +7,7 @@ Created on Apr 20, 2021
 from copy import deepcopy
 
 from ..constants import GROWS, GCOLS
-from ..game import TIE
-from .utils import update_pos_set
+from .utils import update_pos_set, get_coor_selected_piece
 
 EVAL_LOSS = -1
 EVAL_TIE = 8  #  this draw value only matters in the endgame, where the heuristic doesn't matter anymore
@@ -17,7 +16,7 @@ EVAL_WIN = 9
 MAX_DEPTH = 4
 
 
-def minimax(game, depth: int, max_player: bool, move=None):
+def minimax(game_state, depth: int, max_player: bool):
     '''
     Implementation of the minimax algorithm based on:
      * https://github.com/techwithtim/Python-Checkers-AI/blob/master/minimax/algorithm.py
@@ -36,63 +35,57 @@ def minimax(game, depth: int, max_player: bool, move=None):
     '''
 
     print("\n\n", "\t" * abs(2 - depth), "ENTERING MINIMAX DEPTH", depth, "MAX =", max_player)
-    if move:
-        print("\t" * abs(2 - depth), "played position:", move[0], "picked piece:", move[1])
-    print("\t" * abs(2 - depth), "Simulated game_board:\n" + str(game.game_board))
-    print("\t" * abs(2 - depth), "Simulated storage_board:\n" + str(game.storage_board))
+    print("\t" * abs(2 - depth), "Game State:")
+    print(game_state[0].display(depth))
+    print(game_state[1].display(depth))
+    print("\t" * abs(2 - depth), "Selected_piece:" + str(game_state[2]))
 
     # Terminal state or max depth reached
-    if depth == 0 or game.winner():
-        return state_eval(game), move  # * (-1 if max_player else 1) ??, move
+    if depth == 0 or game_state[0].winner():
+        print("\t" * abs(2 - depth), "State_eval:", state_eval(game_state), "\n\n")
+        return state_eval(game_state), game_state  # * (-1 if max_player else 1) ??, move
 
     if max_player:  #  meaning we are trying to maximize the evaluation
         max_eval = float('-inf')
         best_move = None
-        for move in get_all_moves(game, False):  #  we get all the positions in which we can put the current piece
-            # print(move)
-            for piece in get_all_moves(game, True):  # and then we get all the pickable pieces
+        for move in get_all_moves(game_state):  #  we get all the positions in which we can put the current piece
+            # TODO: we might have to store the original game&storage boards somewhere before doing that
 
-                # TODO: we might have to store the original game&storage boards somewhere before doing that
-
-                evaluation = minimax(game, depth - 1, False, (move, piece))[0]  # we get the evaluation at index 0
-                max_eval = max(max_eval, evaluation)
-                print("\t" * abs(2 - depth), "evaluation ", evaluation)
-                if max_eval == evaluation:
-                    print("\t" * abs(2 - depth), "max_evaluation updated:", max_eval)
-                    best_move = (move, piece)  # we consider moves as a tuple
+            evaluation = minimax(move, depth - 1, False)[0]  # we get the evaluation at index 0
+            max_eval = max(max_eval, evaluation)
+            print("\t" * abs(2 - depth), "evaluation ", evaluation)
+            if max_eval == evaluation:
+                print("\t" * abs(2 - depth), "max_evaluation updated:", max_eval)
+                best_move = move  # we consider moves as a tuple
 
         return max_eval, best_move
 
     else:
         min_eval = float('inf')
         best_move = None
-        for move in get_all_moves(game, False):  #  we get all the positions in which we can put the current piece
-            # print(get_all_moves(game, False))
-            for piece in get_all_moves(game, True):  # and then we get all the pickable pieces
+        for move in get_all_moves(game_state):  #  we get all the positions in which we can put the current piece
+            # TODO: we might have to store the original game&storage boards somewhere before doing that
 
-                # TODO: we might have to store the original game&storage boards somewhere before doing that
-
-                evaluation = -minimax(game, depth - 1, True, (move, piece))[0]  # negamax with the - sign
-                min_eval = min(min_eval, evaluation)
-                print("\t" * abs(2 - depth), "evaluation ", evaluation)
-
-                if min_eval == evaluation:
-                    print("\t" * abs(2 - depth), "min_evaluation updated:", min_eval)
-                    best_move = (move, piece)
+            evaluation = -minimax(move, depth - 1, True)[0]  # we get the evaluation at index 0
+            min_eval = min(min_eval, evaluation)
+            print("\t" * abs(2 - depth), "evaluation ", evaluation)
+            if min_eval == evaluation:
+                print("\t" * abs(2 - depth), "min_evaluation updated:", min_eval)
+                best_move = move  # we consider moves as a tuple
 
         return min_eval, best_move
 
 
-def state_eval(game):
-    if game.winner() == TIE:
-        return EVAL_TIE
-    elif isinstance(game.winner(), str):
+def state_eval(game_state):
+    if game_state[0].winner():
         return EVAL_WIN
+    elif game_state[0].is_full():
+        return EVAL_TIE
     else:
-        return heuristic(game)
+        return heuristic(game_state)
 
 
-def heuristic(game):
+def heuristic(game_state):
     '''
     Heuristic function for the level 3 and 4 AIs. The return values can range from 0 to 7 depending on the number
     of lines that result in a win if the right piece is put during the next turn.
@@ -111,8 +104,8 @@ def heuristic(game):
             col_line.append((col, row))
             row_line.append((row, col))
 
-        h = update_pos_set(game, row_line, h)
-        h = update_pos_set(game, col_line, h)
+        h = update_pos_set(game_state[0], row_line, h, game_state[1])
+        h = update_pos_set(game_state[0], col_line, h, game_state[1])
 
     #  Diagonals
     top_left_diagonal_line = []
@@ -122,41 +115,45 @@ def heuristic(game):
         top_left_diagonal_line.append((col, col))
         top_right_diagonal_line.append((GCOLS - col - 1, col))
 
-    h = update_pos_set(game, top_right_diagonal_line, h)
-    h = update_pos_set(game, top_left_diagonal_line, h)
+    h = update_pos_set(game_state[0], top_right_diagonal_line, h, game_state[1])
+    h = update_pos_set(game_state[0], top_left_diagonal_line, h, game_state[1])
 
     # print(h)
     return len(h)
 
 
-def get_all_moves(game, pick):
+def get_all_submoves(game_state, pick):
     #  TODO: verify if the return value is alright, I have a doubt
     if pick:
-        coor_selected_piece_to_revove = get_coor_selected_piece(game)
-        valid_moves = deepcopy(game.storage_board.get_valid_moves())
+        valid_moves = game_state[1].get_valid_moves()
 
         # print("piece to remove:", game.selected_piece, "coor_selected_piece_to_remove", coor_selected_piece_to_revove)
-        if coor_selected_piece_to_revove:
-            valid_moves.remove(coor_selected_piece_to_revove)
+        print("REMOVED PIECE: ", game_state[2])
+        valid_moves.remove(game_state[2])
 
         # print("valid_moves atfer removal:", valid_moves)
 
         return valid_moves  # all the moves possible
     else:
         # print("get_all_moves game_board: ", game.game_board.get_valid_moves())
-        return game.game_board.get_valid_moves()
+        return game_state[0].get_valid_moves()
 
 
-def get_coor_selected_piece(game):
-    for idx, row in enumerate(game.storage_board.board):
-        try:
-            return (idx, row.index(game.selected_piece))
-        except ValueError:
-            # this isn't in this row
-            pass
+def get_all_moves(game_state):
+    moves = []
+
+    print("get_all_submoves position:", get_all_submoves(game_state, False))
+    print("get_all_submoves piece:", get_all_submoves(game_state, True))
+    for position_played in get_all_submoves(game_state, False):
+        for piece_picked in get_all_submoves(game_state, True):
+            temp_game_state = deepcopy(game_state)
+            new_game_state = simulate_move(temp_game_state, position_played, piece_picked)
+            moves.append(new_game_state)
+
+    return moves
 
 
-def simulate_move(game, position_played, position_picked_piece):
+def simulate_move(game_state, position_played, piece_picked):
     '''
     Function that simulates a move, i.e. that generates a new storage board and a new game board by taking the
     position_picked_piece from the game board and putting in the position_played.
@@ -165,18 +162,8 @@ def simulate_move(game, position_played, position_picked_piece):
     game -- a Game object that will be updated with new boards
     position -- the position with which we need to deal in order to simulate the move
     '''
+    game_board, game_storage, selected_piece_coor = game_state
+    selected_piece = game_storage.board[selected_piece_coor[0]][selected_piece_coor[1]]
+    game_board.put_piece(selected_piece, position_played[0], position_played[1])
 
-    # Where we do the picking
-    picked_piece_row, picked_piece_col = position_picked_piece
-    storage_board_copy = deepcopy(game.storage_board)
-
-    picked_piece = storage_board_copy.board[picked_piece_row][picked_piece_col]
-    storage_board_copy.board[picked_piece_row][picked_piece_col] = 0
-
-    # Where we do the putting
-    position_played_row, position_played_col = position_played
-    game_board_copy = deepcopy(game.game_board)  #  we generate a copy of the game_board
-    print(type(picked_piece), picked_piece)
-    game_board_copy.put_piece(picked_piece, position_played_row, position_played_col)  #  and put the selected piece in the selected spot
-
-    return game_board_copy, storage_board_copy
+    return game_state[0], game_state[1], piece_picked

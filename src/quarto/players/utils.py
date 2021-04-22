@@ -5,9 +5,10 @@ Created on Apr 22, 2021
 '''
 
 from copy import deepcopy
+from ..board import Board
 
 
-def can_line_win(game, line):
+def can_line_win(game, line, sboard=None):
     '''
     Checks if a line has the potential to win (if one of the available pieces can fill it to make it a winning line)
 
@@ -16,7 +17,9 @@ def can_line_win(game, line):
     '''
     count, pos = count_zeros_in_line(game, line)
     if count == 1:  # meaning one piece is missing
-        for row in game.storage_board.board:  # for each row in the storage board
+        storage = sboard.board if sboard else game.storage_board.board
+
+        for row in storage:  # for each row in the storage board
             for piece in row:  # and each piece in each rowhttps://github.com/marienfressinaud/AI_quarto
                 # we check if this move would be winning
 
@@ -33,18 +36,31 @@ def can_line_win(game, line):
 def count_zeros_in_line(game, line):
     count = 0
     pos = (-1, -1)
+
+    if isinstance(game, Board):
+        game = game.board
+    else:
+        game = game.game_board.board
+
     for col, row in line:
-        if game.game_board.board[row][col] == 0:
+        if game[row][col] == 0:
             count += 1
             pos = (col, row)
     return count, pos
 
 
-def update_pos_set(game, line, set):
-    pos = can_line_win(game, line)  # false is no pos, the pos otherwise
+def update_pos_set(game, line, set, sboard=None):
+    pos = can_line_win(game, line, sboard)  # false is no pos, the pos otherwise
     if pos:
         set.update({pos})  #  adds pos to the set, if it's already in there, nothing changes
     return set
+
+
+def get_coor_selected_piece(storage_board, selected_piece):
+    for i, row in enumerate(storage_board.board):
+        for j, col in enumerate(row):
+            if col == selected_piece:
+                return (i, j)
 
 
 def get_winning_moves(game, piece=None):
@@ -63,7 +79,11 @@ def is_winning_move(game, move, piece):
     '''
     row, col = move
 
-    game_board_copy = deepcopy(game.game_board)  #  we generate a copy of the game_board
+    if isinstance(game, Board):
+        game_board_copy = deepcopy(game)  #  we generate a copy of the game_board
+    else:
+        game_board_copy = deepcopy(game.game_board)  #  we generate a copy of the game_board
+
     piece_copy = deepcopy(piece)
 
     game_board_copy.put_piece(piece_copy, row, col)  #  and put the selected piece in the selected spot

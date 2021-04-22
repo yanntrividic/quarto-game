@@ -10,7 +10,7 @@ from time import sleep
 from ..constants import (SCOLS, SROWS)
 from .minimax import minimax, heuristic
 from .player import Player
-from .utils import get_not_losing_moves, get_winning_moves
+from .utils import get_not_losing_moves, get_winning_moves, get_coor_selected_piece
 
 
 class AI_level1(Player):
@@ -103,7 +103,6 @@ class AI_level2(Player):
             game.valid_moves = []
 
         game.end_turn(selected_piece)
-        print("heuristic of the current state: " + str(heuristic(game)))
         sleep(1)
 
         return True
@@ -149,26 +148,21 @@ class AI_level3(Player):
             game.end_turn(game.selected_piece)
             return True
 
-        result = minimax(game, self.depth, True)
-        position_played, picked_piece = result[1]
+        game_state = (game.game_board, game.storage_board, get_coor_selected_piece(game.storage_board, game.selected_piece))
+        result = minimax(game_state, self.depth, True)
+        game.game_board, game.storage_board, selected_piece_coor = result[1]
         #  the position played and the picked piece are both returned at the same time
 
-        print("position_played=", position_played, ", picked_piece=", picked_piece, ", final_eval=", result[0])
+        print(game.game_board, game.storage_board, "\n", selected_piece_coor)
 
-        print(game.game_board)
-        game.move(position_played[0], position_played[1])
-
-        game.selected_piece = None
-        game.valid_moves = []
         game.end_turn(None)
 
-        game.selected_piece = game.storage_board.get_piece(picked_piece[0], picked_piece[1])
+        game.selected_piece = game.storage_board.get_piece(selected_piece_coor[0], selected_piece_coor[1])
         game.valid_moves = game.game_board.get_valid_moves()
 
-        selected_piece = (picked_piece[1], picked_piece[0])
+        selected_piece = (selected_piece_coor[1], selected_piece_coor[0])
         game.end_turn(selected_piece)
 
-        print("heuristic of the current state: " + str(heuristic(game)))
         sleep(1)
 
         return True

@@ -161,7 +161,6 @@ class Board:
                 return False
         return True
 
-    
     def __is_winning_line(self, pieces):
         '''
         Check if a line is full of the same symbol
@@ -291,6 +290,18 @@ class Board:
         '''
         s = self.__name__ + ":\n"
         for x in range(self.rows):
+            for y in range(self.cols):
+                s += ((str(self.board[x][y]) + " ") if(self.board[x][y]) != 0 else "---- ")
+            s += '\n'
+        return(s)
+
+    def display(self, depth):
+        '''
+        represent the object in a string format
+        '''
+        s = "\t" * abs(2 - depth) + self.__name__ + ":\n"
+        for x in range(self.rows):
+            s += "\t" * abs(2 - depth)
             for y in range(self.cols):
                 s += ((str(self.board[x][y]) + " ") if(self.board[x][y]) != 0 else "---- ")
             s += '\n'
