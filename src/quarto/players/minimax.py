@@ -16,7 +16,7 @@ EVAL_WIN = 9
 MAX_DEPTH = 4
 
 
-def minimax(game_state, depth: int, max_player: bool):
+def minimax(game_state, depth: int, max_player: bool, verbose=False):
     '''
     Implementation of the minimax algorithm based on:
      * https://github.com/techwithtim/Python-Checkers-AI/blob/master/minimax/algorithm.py
@@ -34,15 +34,17 @@ def minimax(game_state, depth: int, max_player: bool):
     If not pick: the move is the cell from the game board in which to put the selected piece in.
     '''
 
-    print("\n\n", "\t" * abs(2 - depth), "ENTERING MINIMAX DEPTH", depth, "MAX =", max_player)
-    print("\t" * abs(2 - depth), "Game State:")
-    print(game_state[0].display(depth))
-    print(game_state[1].display(depth))
-    print("\t" * abs(2 - depth), "Selected_piece:" + str(game_state[2]))
+    if verbose:
+        print("\n\n", "\t" * abs(2 - depth), "ENTERING MINIMAX DEPTH", depth, "MAX =", max_player)
+        print("\t" * abs(2 - depth), "Game State:")
+        print(game_state[0].display(depth))
+        print(game_state[1].display(depth))
+        print("\t" * abs(2 - depth), "Selected_piece:" + str(game_state[2]))
 
     # Terminal state or max depth reached
     if depth == 0 or game_state[0].winner():
-        print("\t" * abs(2 - depth), "State_eval:", state_eval(game_state), "\n\n")
+        if verbose:
+            print("\t" * abs(2 - depth), "State_eval:", state_eval(game_state), "\n\n")
         return state_eval(game_state), game_state  # * (-1 if max_player else 1) ??, move
 
     if max_player:  #  meaning we are trying to maximize the evaluation
@@ -53,9 +55,11 @@ def minimax(game_state, depth: int, max_player: bool):
 
             evaluation = minimax(move, depth - 1, False)[0]  # we get the evaluation at index 0
             max_eval = max(max_eval, evaluation)
-            print("\t" * abs(2 - depth), "evaluation ", evaluation)
+            if verbose:
+                print("\t" * abs(2 - depth), "evaluation ", evaluation)
             if max_eval == evaluation:
-                print("\t" * abs(2 - depth), "max_evaluation updated:", max_eval)
+                if verbose:
+                    print("\t" * abs(2 - depth), "max_evaluation updated:", max_eval)
                 best_move = move  # we consider moves as a tuple
 
         return max_eval, best_move
@@ -68,9 +72,11 @@ def minimax(game_state, depth: int, max_player: bool):
 
             evaluation = -minimax(move, depth - 1, True)[0]  # we get the evaluation at index 0
             min_eval = min(min_eval, evaluation)
-            print("\t" * abs(2 - depth), "evaluation ", evaluation)
+            if verbose:
+                print("\t" * abs(2 - depth), "evaluation ", evaluation)
             if min_eval == evaluation:
-                print("\t" * abs(2 - depth), "min_evaluation updated:", min_eval)
+                if verbose:
+                    print("\t" * abs(2 - depth), "min_evaluation updated:", min_eval)
                 best_move = move  # we consider moves as a tuple
 
         return min_eval, best_move
@@ -128,7 +134,7 @@ def get_all_submoves(game_state, pick):
         valid_moves = game_state[1].get_valid_moves()
 
         # print("piece to remove:", game.selected_piece, "coor_selected_piece_to_remove", coor_selected_piece_to_revove)
-        print("REMOVED PIECE: ", game_state[2])
+       # print("REMOVED PIECE: ", game_state[2])
         valid_moves.remove(game_state[2])
 
         # print("valid_moves atfer removal:", valid_moves)
@@ -142,8 +148,8 @@ def get_all_submoves(game_state, pick):
 def get_all_moves(game_state):
     moves = []
 
-    print("get_all_submoves position:", get_all_submoves(game_state, False))
-    print("get_all_submoves piece:", get_all_submoves(game_state, True))
+    # print("get_all_submoves position:", get_all_submoves(game_state, False))
+    #  print("get_all_submoves piece:", get_all_submoves(game_state, True))
     for position_played in get_all_submoves(game_state, False):
         for piece_picked in get_all_submoves(game_state, True):
             temp_game_state = deepcopy(game_state)
@@ -164,6 +170,7 @@ def simulate_move(game_state, position_played, piece_picked):
     '''
     game_board, game_storage, selected_piece_coor = game_state
     selected_piece = game_storage.board[selected_piece_coor[0]][selected_piece_coor[1]]
+    game_storage.board[selected_piece_coor[0]][selected_piece_coor[1]] = 0
     game_board.put_piece(selected_piece, position_played[0], position_played[1])
 
     return game_state[0], game_state[1], piece_picked
