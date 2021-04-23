@@ -67,6 +67,7 @@ def main():
                         game.swap_players(clicked_arrow)
 
                     row, col = game.get_row_col_from_mouse(pos)
+                    print(row, col)
                     if (row, col) != (-1, -1) and game.is_human_turn():  # if pieces has been taken do nothing
                         game.select(row, col)
                         print(game.__repr__())

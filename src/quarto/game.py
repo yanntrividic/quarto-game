@@ -18,7 +18,7 @@ from .constants import (BOARDOUTLINE, SQUARE_SIZE,
                         TXT_X, TXT_Y,
                         X_LEFT_ARROWS, X_RIGHT_ARROWS, Y_TOP_ARROWS, Y_BOT_ARROWS)
 
-from .players.ai import AI_level1, AI_level2, AI_level3
+from .players.ai import AI_level1, AI_level2, AI_level3, AI_level4
 from .players.human import Human
 
 
@@ -102,10 +102,11 @@ class Game:
 
     def __init_players(self, p, ai):
         human = Human(p)
-        ai_lvl1 = AI_level1(ai)  # TODO add ai
-        ai_lvl2 = AI_level2(ai)
-        ai_lvl3 = AI_level3(ai, 2)
-        return [human, ai_lvl1, ai_lvl2, ai_lvl3]
+        ai_lvl1 = AI_level1(ai + " lvl1")  # TODO add ai
+        ai_lvl2 = AI_level2(ai + " lvl2")
+        ai_lvl3 = AI_level3(ai + " lvl3")
+        ai_lvl4 = AI_level4(ai + " lvl4")
+        return [human, ai_lvl1, ai_lvl2, ai_lvl3, ai_lvl4]
 
     def reset(self):
         '''

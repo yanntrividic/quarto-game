@@ -22,7 +22,7 @@ class AI_level1(Player):
         '''
         Constructor
         '''
-        self.__name__ = name + " (lvl 1)"
+        self.__name__ = name
 
     def select(self, game, row, col):
         '''
@@ -63,7 +63,7 @@ class AI_level2(Player):
         '''
         Constructor
         '''
-        self.__name__ = name + " (lvl 2)"
+        self.__name__ = name
 
     def select(self, game, row, col):
         '''
@@ -125,12 +125,16 @@ class AI_level3(Player):
     This AI uses the minmax algorithm.
     '''
 
-    def __init__(self, name, depth):
+    def __init__(self, name):
         '''
         Constructor
         '''
-        self.__name__ = name + " (lvl 3)"
-        self.depth = depth
+        self.__name__ = name
+        self.depth = 1
+
+        self.LEVEL_1_DEPTH_UNTIL = 15
+        self.LEVEL_2_DEPTH_UNTIL = 8
+        self.LEVEL_3_DEPTH_UNTIL = 5
 
     def select(self, game, row, col):
         '''
@@ -162,7 +166,87 @@ class AI_level3(Player):
 
         selected_piece = (selected_piece_coor[1], selected_piece_coor[0])
         game.end_turn(selected_piece)
-
-        sleep(1)
+        self.update_depth(game)
 
         return True
+
+    def update_depth(self, game):
+        nb_turns = len(game.game_board.get_valid_moves())
+
+        if nb_turns > self.LEVEL_1_DEPTH_UNTIL:
+            self.depth = 1
+        elif nb_turns > self.LEVEL_2_DEPTH_UNTIL:
+            self.depth = 2
+        elif nb_turns > self.LEVEL_3_DEPTH_UNTIL:
+            self.depth = 3
+
+
+class AI_level4(AI_level2):
+    '''
+    This AI uses the minmax algorithm but starts by using the AI_level2 algorithm
+    '''
+
+    def __init__(self, name):
+        '''
+        Constructor
+        '''
+        super().__init__(name)
+
+        self.level2 = True
+        self.depth = 2
+        self.AI_LEVEL2_UNTIL = 12
+        self.LEVEL_2_DEPTH_UNTIL = 8
+        self.LEVEL_3_DEPTH_UNTIL = 5
+
+    def select(self, game, row, col):
+        self.update_depth(game)
+        if self.level2:
+            return AI_level2.select(self, game, row, col)
+        else:
+            return self.select_ai_level4(game, row, col)
+
+    def select_ai_level4(self, game, row, col):
+        '''
+        This select method is a bit different from the past ones as we don't give control back to the game after the
+        piece is placed, we don't the placing and the picking at once
+        '''
+
+        # FIXME: might not work
+        # before picking the first piece
+#         if len(game.game_board.get_valid_moves()) == SCOLS * SROWS and game.pick:
+#             move = get_random_move(game)
+#             print(move)
+#             game.selected_piece = game.storage_board.get_piece(move[0], move[1])
+#             game.valid_moves = game.game_board.get_valid_moves()
+#             game.end_turn(game.selected_piece)
+#             return True
+
+        print("GAME SELECTED PIECE =", game.selected_piece)
+        game_state = (game.game_board, game.storage_board, get_coor_selected_piece(game.storage_board, game.selected_piece))
+        print("GAME SELECTED PIECE =", game.selected_piece)
+        result = minimax(game_state, self.depth, True)
+        game.game_board, game.storage_board, selected_piece_coor = result[1]
+        #  the position played and the picked piece are both returned at the same time
+
+        print(game.game_board, game.storage_board, "\n", selected_piece_coor)
+
+        game.end_turn(None)
+
+        game.selected_piece = game.storage_board.get_piece(selected_piece_coor[0], selected_piece_coor[1])
+        game.valid_moves = game.game_board.get_valid_moves()
+
+        selected_piece = (selected_piece_coor[1], selected_piece_coor[0])
+        game.end_turn(selected_piece)
+
+        return True
+
+    def update_depth(self, game):
+        nb_turns = len(game.game_board.get_valid_moves())
+
+        print("nb_turns =", nb_turns)
+        if nb_turns < self.AI_LEVEL2_UNTIL:
+            self.level2 = False
+        elif nb_turns < self.LEVEL_2_DEPTH_UNTIL:
+            self.depth = 2
+        elif nb_turns < self.LEVEL_3_DEPTH_UNTIL:
+            self.depth = 3
