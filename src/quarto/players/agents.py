@@ -5,10 +5,9 @@ Created on Mar 21, 2021
 '''
 
 from random import randint
-from time import sleep
 
 from ..constants import (SCOLS, SROWS)
-from .minimax import minimax, heuristic
+from .minimax import minimax
 from .player import Player
 from .utils import get_not_losing_moves, get_winning_moves, get_coor_selected_piece
 
@@ -127,23 +126,21 @@ class AI_level3(Player):
         Constructor
         '''
         self.__name__ = name
-        self.depth = 2
 
-        self.DEPTH_2_UNTIL = (2, 7)  # (depth, nb of turns left)
-        self.DEPTH_3_UNTIL = (3, 4)  # (depth, nb of turns left)
+        # (depth, nb of turns left)
+        self.DEPTH_1_UNTIL = (1, 14)  #  during the two first rounds we just check the first layer
+        self.DEPTH_2_UNTIL = (2, 9)
+        self.DEPTH_3_UNTIL = (3, 5)
         self.DEPTH_4_UNTIL = (4, 0)
-
-        self.depths = [self.DEPTH_2_UNTIL,  # (depth, nb of turns left)]
-                       self.DEPTH_3_UNTIL,
-                       self.DEPTH_4_UNTIL]
 
     def select(self, game, row, col):
         '''
         This select method is a bit different from the past ones as we don't give control back to the game after the
-        piece is placed, we don't the placing and the picking at once
+        piece is placed, we do the placing and the picking at once
         '''
 
-        # FIXME: might not work
+        self.update_depth(game)
+
         # before picking the first piece
         if len(game.game_board.get_valid_moves()) == SCOLS * SROWS and game.pick:
             move = get_random_move(game)
@@ -166,90 +163,27 @@ class AI_level3(Player):
         game.selected_piece = game.storage_board.get_piece(selected_piece_coor[0], selected_piece_coor[1])
         game.valid_moves = game.game_board.get_valid_moves()
 
-        selected_piece = (selected_piece_coor[1], selected_piece_coor[0])
-        game.end_turn(selected_piece)
-        self.update_depth(game)
+        if not game.winner():  #  when there is a winner, no need to swap turns
+            selected_piece = (selected_piece_coor[1], selected_piece_coor[0])
+            game.end_turn(selected_piece)
 
         return True
 
     def update_depth(self, game):
+        '''
+        Updates the depth attribute depending on how far into the game we are.
+        '''
         nb_turns = len(game.game_board.get_valid_moves())
 
         print("nb_turns =", nb_turns)
-        if nb_turns > self.DEPTH_2_UNTIL[1]:
+
+        if nb_turns > self.DEPTH_1_UNTIL[1]:
+            self.depth = self.DEPTH_1_UNTIL[0]
+        elif nb_turns > self.DEPTH_2_UNTIL[1]:
             self.depth = self.DEPTH_2_UNTIL[0]
         elif nb_turns > self.DEPTH_3_UNTIL[1]:
             self.depth = self.DEPTH_3_UNTIL[0]
         elif nb_turns > self.DEPTH_4_UNTIL[1]:
             self.depth = self.DEPTH_4_UNTIL[0]
-        print("depth =", self.depth)
 
-
-class AI_level4(AI_level2):
-    '''
-    This AI uses the minmax algorithm but starts by using the AI_level2 algorithm
-    '''
-
-    def __init__(self, name):
-        '''
-        Constructor
-        '''
-        super().__init__(name)
-
-        self.level2 = True
-        self.depth = 2
-        self.AI_LEVEL2_UNTIL = 10
-        self.DEPTH_2_UNTIL = 5
-
-    def select(self, game, row, col):
-        self.update_depth(game)
-        if self.level2:
-            return AI_level2.select(self, game, row, col)
-        else:
-            return self.select_ai_level4(game, row, col)
-
-    def select_ai_level4(self, game, row, col):
-        '''
-        This select method is a bit different from the past ones as we don't give control back to the game after the
-        piece is placed, we don't the placing and the picking at once
-        '''
-
-        # FIXME: might not work
-        # before picking the first piece
-#         if len(game.game_board.get_valid_moves()) == SCOLS * SROWS and game.pick:
-#             move = get_random_move(game)
-#             print(move)
-#             game.selected_piece = game.storage_board.get_piece(move[0], move[1])
-#             game.valid_moves = game.game_board.get_valid_moves()
-#             game.end_turn(game.selected_piece)
-#             return True
-
-        print("GAME SELECTED PIECE =", game.selected_piece)
-        game_state = (game.game_board, game.storage_board, get_coor_selected_piece(game.storage_board, game.selected_piece))
-        print("GAME SELECTED PIECE =", game.selected_piece)
-        result = minimax(game_state, self.depth, True)
-
-        if result[1]:  # if none, that means there is no piece left
-            game.game_board, game.storage_board, selected_piece_coor = result[1]
-            #  the position played and the picked piece are both returned at the same time
-            print(game.game_board, game.storage_board, "\n", selected_piece_coor)
-
-        game.end_turn(None)
-
-        game.selected_piece = game.storage_board.get_piece(selected_piece_coor[0], selected_piece_coor[1])
-        game.valid_moves = game.game_board.get_valid_moves()
-
-        selected_piece = (selected_piece_coor[1], selected_piece_coor[0])
-        game.end_turn(selected_piece)
-
-        return True
-
-    def update_depth(self, game):
-        nb_turns = len(game.game_board.get_valid_moves())
-
-        print("nb_turns =", nb_turns)
-        if nb_turns < self.AI_LEVEL2_UNTIL:
-            self.level2 = False
-        elif nb_turns < self.DEPTH_2_UNTIL:
-            self.depth = 3
         print("depth =", self.depth)

@@ -18,7 +18,7 @@ from .constants import (BOARDOUTLINE, SQUARE_SIZE,
                         TXT_X, TXT_Y,
                         X_LEFT_ARROWS, X_RIGHT_ARROWS, Y_TOP_ARROWS, Y_BOT_ARROWS)
 
-from .players.ai import AI_level1, AI_level2, AI_level3, AI_level4
+from quarto.players.agents import AI_level1, AI_level2, AI_level3
 from .players.human import Human
 
 
@@ -96,7 +96,7 @@ class Game:
         self.players1 = self.__init_players(PLAYER1, AI1)
         self.players2 = self.__init_players(PLAYER2, AI2)
         self.player1 = self.players1[0]  # is the index in the players1 array
-        self.player2 = self.players2[0]
+        self.player2 = self.players2[3]
         self.pick = True
         self.valid_moves = []  # at first, no piece is selected so no valid moves
 
@@ -105,8 +105,7 @@ class Game:
         ai_lvl1 = AI_level1(ai + " lvl1")  # TODO add ai
         ai_lvl2 = AI_level2(ai + " lvl2")
         ai_lvl3 = AI_level3(ai + " lvl3")
-        ai_lvl4 = AI_level4(ai + " lvl4")
-        return [human, ai_lvl1, ai_lvl2, ai_lvl3, ai_lvl4]
+        return [human, ai_lvl1, ai_lvl2, ai_lvl3]
 
     def reset(self):
         '''

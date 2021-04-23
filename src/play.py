@@ -77,8 +77,8 @@ def main():
                 if event.type == pg.QUIT:
                     run = False
                 if event.type == pg.MOUSEBUTTONDOWN:
-                    print("Click " + str(pos))  # everytime the user presses his mouse button, we print click
                     pos = pg.mouse.get_pos()  # (x, y) pos of the mouse when pressed
+                    print("Click " + str(pos))  # everytime the user presses his mouse button, we print click
                     if game.is_reset_clicked(pos):
                         game.reset()
 
@@ -90,4 +90,5 @@ def main():
 
 
 # execute the main function
-main()
+if __name__ == '__main__':
+    main()

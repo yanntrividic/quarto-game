@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>src.quarto.players.minimax API documentation</title>
+<meta name="description" content="Created on Apr 20, 2021 …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.quarto.players.minimax</code></h1>
+</header>
+<section id="section-intro">
+<p>Created on Apr 20, 2021</p>
+<p>@author: yann</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#39;&#39;&#39;
+Created on Apr 20, 2021
+
+@author: yann
+&#39;&#39;&#39;
+
+from copy import deepcopy
+
+from ..constants import GROWS, GCOLS
+from .utils import update_pos_set
+
+EVAL_TIE = 0  #  this draw value only matters in the endgame, where the heuristic doesn&#39;t matter anymore
+EVAL_WIN = 9
+
+MAX_DEPTH = 4
+
+
+def minimax(game_state, depth: int, max_player: bool, alpha=float(&#39;-inf&#39;), beta=float(&#39;inf&#39;), verbose=True):  # alpha=float(&#39;-inf&#39;), beta=float(&#39;inf&#39;), verbose=True):
+    &#39;&#39;&#39;
+    Implementation of the minimax algorithm (negamax variant) with alpha-beta pruning for Quarto! based on
+     * https://github.com/techwithtim/Python-Checkers-AI/blob/master/minimax/algorithm.py
+     * https://github.com/marienfressinaud/AI_quarto
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+    depth -- int that represents the maximum depth we will explore
+    max_player -- the player trying to maximize its evaluation, True if maximizing, False if minimizing
+    alpha -- initialized to the worst possible evaluation, has to be None if we don&#39;t want any pruning
+    beta -- initialized to the best possible evaluation, has to be None if we don&#39;t want any pruning
+    verbose -- if you want to see the different states being evaluated
+
+    Returns
+    a tuple that contains :
+    [0] the evaluation of the child (between -9 for a loss, and 9 for a win)
+    [1] the new game_state
+    &#39;&#39;&#39;
+
+    if verbose:
+        print(&#34;\n\n&#34;, &#34;\t&#34; * abs(2 - depth), &#34;ENTERING MINIMAX DEPTH&#34;, depth, &#34;MAX =&#34;, max_player)
+        print(&#34;\t&#34; * abs(2 - depth), &#34;Game State:&#34;)
+        print(game_state[0].display(depth))
+        print(game_state[1].display(depth))
+        print(&#34;\t&#34; * abs(2 - depth), &#34;Selected_piece:&#34; + str(game_state[2]))
+
+    # Terminal state or max depth reached
+    if depth == 0 or game_state[0].winner():
+        if verbose:
+            print(&#34;\t&#34; * abs(2 - depth), &#34;State_eval:&#34;, state_eval(game_state), &#34;\n\n&#34;)
+        return state_eval(game_state) * (-1 if max_player else 1), game_state  # we return the evaluation of the child and the child itself
+        # FIXME: this line is the most unconventional one. But it also makes sense: without it, winning would be as
+        # rewarding as losing
+
+    best_move = None  #  instanciate the best move to none
+
+    # If we are trying to maximize the evaluation
+    if max_player:
+        max_eval = float(&#39;-inf&#39;)  #  we want to find the highest evaluation that can be obtained from this game_state
+        for child in get_all_possible_states(game_state):  #  we get all the positions in which we can put the current piece
+            evaluation = minimax(child, depth - 1, False, alpha, beta)[0]  # the evaluation is at index 0
+            max_eval = max(max_eval, evaluation)
+
+            if max_eval == evaluation:
+                if verbose:
+                    print(&#34;\t&#34; * abs(3 - depth), &#34;max_evaluation updated:&#34;, max_eval)
+                best_move = child  # we consider moves as a tuple
+
+            #  Pruning
+            if alpha and beta:
+                alpha = max(alpha, max_eval)
+                if verbose:
+                    print(&#34;\t&#34; * abs(3 - depth), &#34;alpha =&#34;, alpha, &#34;beta =&#34;, beta)
+                if beta &lt;= alpha:  # if beta is inferior, that means that there was a better option avaiable before
+                    break
+
+            # Some debugging
+            if verbose:
+                print(&#34;\t&#34; * abs(3 - depth), &#34;evaluation &#34;, evaluation)
+
+        return max_eval, best_move
+
+    # Or if we are trying to minimize the evaluation
+    else:
+        min_eval = float(&#39;inf&#39;)  #  we want to find the lowest evaluation that can be obtained from this game_state
+        for child in get_all_possible_states(game_state):
+            evaluation = minimax(child, depth - 1, True, alpha, beta)[0]  #  here, we add a minus sign for the negamax variant
+            min_eval = min(min_eval, evaluation)  # basically the same as in the max_player condition block, but with the minimum
+
+            # Assigning the new value
+            if min_eval == evaluation:
+                if verbose:
+                    print(&#34;\t&#34; * abs(3 - depth), &#34;min_evaluation updated:&#34;, min_eval)
+                best_move = child  # we consider moves as a tuple
+
+            # Pruning
+            if alpha and beta:
+                beta = min(beta, min_eval)
+                if verbose:
+                    print(&#34;\t&#34; * abs(3 - depth), &#34;alpha =&#34;, alpha, &#34;beta =&#34;, beta)
+                if beta &lt;= alpha:
+                    break
+
+            # Some debugging
+            if verbose:
+                print(&#34;\t&#34; * abs(3 - depth), &#34;evaluation &#34;, evaluation)
+
+        return min_eval, best_move
+
+
+def state_eval(game_state):
+    &#39;&#39;&#39;
+    Computes the evaluation of the state of the game. The value can range from 0 (a draw) to 9 (a win)
+    1 signifies that there is no win opportunity for the player that is gonna play next, whereas 8 means
+    that there is 7 win opportunities (the maximum you can get)
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    an integer between 0 and 9
+    &#39;&#39;&#39;
+    if game_state[0].winner():
+        return EVAL_WIN
+    elif game_state[0].is_full():
+        return EVAL_TIE
+    else:
+        return 0  # FIXME: the heuristic doesn&#39;t work
+        # return heuristic(game_state) + 1  #  the +1 is here to let only the TIE be of 0 value
+
+
+def heuristic(game_state):
+    &#39;&#39;&#39;
+    Heuristic function for the level 3 and 4 AIs. The return values can range from 0 to 7 depending on the number
+    of lines that result in a win if the right piece is put during the next turn (it can range from 0 to 7).
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    an integer between 0 and 7
+    &#39;&#39;&#39;
+
+    h = set()  # heuristics value
+
+    # Rows and columns
+    for col in range(GCOLS):
+        row_line = []
+        col_line = []
+
+        for row in range(GROWS):
+            col_line.append((col, row))
+            row_line.append((row, col))
+
+        h = update_pos_set(game_state[0], row_line, h, game_state[1])
+        h = update_pos_set(game_state[0], col_line, h, game_state[1])
+
+    #  Diagonals
+    top_left_diagonal_line = []
+    top_right_diagonal_line = []
+
+    for col in range(GCOLS):  #  for diagonals
+        top_left_diagonal_line.append((col, col))
+        top_right_diagonal_line.append((GCOLS - col - 1, col))
+
+    h = update_pos_set(game_state[0], top_right_diagonal_line, h, game_state[1])
+    h = update_pos_set(game_state[0], top_left_diagonal_line, h, game_state[1])
+
+    # print(h)
+    return len(h)
+
+
+def get_all_possible_states(game_state):
+    &#39;&#39;&#39;
+    Function that generates a list of possible states from the given game_state
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    a list of possible game_state (as described higher) after a move is made.
+    &#39;&#39;&#39;
+    possible_states_after_move = []
+
+    for position_played in get_all_submoves(game_state, False):  #  for each cell where we can put the selected piece
+        for piece_picked in get_all_submoves(game_state, True):  #  and each available piece left
+            temp_game_state = deepcopy(game_state)  #  we copy the current game_state
+            new_game_state = simulate_move(temp_game_state, position_played, piece_picked)  #  and play the move given
+            possible_states_after_move.append(new_game_state)
+
+    return possible_states_after_move
+
+
+def get_all_submoves(game_state, pick):
+    &#39;&#39;&#39;
+    Function that returns all the valid moves depending on the stage of the turn defined by pick
+
+    pick -- boolean, if it&#39;s time to pick a piece, True. If it&#39;s time to put a piece on the game_board, False
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    a list of tuples that correspond either to game_board coordinates if pick == False, or to a set of
+    storage_board coordinates if pick == True
+    &#39;&#39;&#39;
+    if pick:
+        valid_moves = game_state[1].get_valid_moves()  # built-in method to get the available pieces on the storage_board
+        #  the current selected_piece is removed from the valid pieces to pick as it will be played on the game_board
+        valid_moves.remove(game_state[2])
+        return valid_moves  # all the moves possible
+    else:
+        return game_state[0].get_valid_moves()  # built-in method to get the available pieces on the game_board
+
+
+def simulate_move(game_state, position_played, piece_picked):
+    &#39;&#39;&#39;
+    Function that simulates a move, i.e. that takes as input a game_state, a position played for the current selected_piece
+    and a new picked piece, and makes a new game_state by playing the move.
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+    position_played -- a tuple of (x, y) coordinates that correspond to where we want to put the piece on the game_board
+    piece_picked -- a tuple of (x, y) coordinates that correspond to where we want to take the piece from the storage_board
+
+    Returns
+    the game_state after the specified move
+    &#39;&#39;&#39;
+    game_board, game_storage, selected_piece_coor = game_state
+    selected_piece = game_storage.board[selected_piece_coor[0]][selected_piece_coor[1]]
+    game_storage.board[selected_piece_coor[0]][selected_piece_coor[1]] = 0
+    game_board.put_piece(selected_piece, position_played[0], position_played[1])
+
+    return game_state[0], game_state[1], piece_picked</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.quarto.players.minimax.get_all_possible_states"><code class="name flex">
+<span>def <span class="ident">get_all_possible_states</span></span>(<span>game_state)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function that generates a list of possible states from the given game_state</p>
+<p>game_state &ndash; a tuple of three elements :
+- [0] the game_board, a Board object that holds the current played pieces
+- [1] the storage_board, a Board object that holds the pieces available to pick
+- [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+on the storage_board. This is the piece that has to be put on the game_board.</p>
+<p>Returns
+a list of possible game_state (as described higher) after a move is made.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_possible_states(game_state):
+    &#39;&#39;&#39;
+    Function that generates a list of possible states from the given game_state
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    a list of possible game_state (as described higher) after a move is made.
+    &#39;&#39;&#39;
+    possible_states_after_move = []
+
+    for position_played in get_all_submoves(game_state, False):  #  for each cell where we can put the selected piece
+        for piece_picked in get_all_submoves(game_state, True):  #  and each available piece left
+            temp_game_state = deepcopy(game_state)  #  we copy the current game_state
+            new_game_state = simulate_move(temp_game_state, position_played, piece_picked)  #  and play the move given
+            possible_states_after_move.append(new_game_state)
+
+    return possible_states_after_move</code></pre>
+</details>
+</dd>
+<dt id="src.quarto.players.minimax.get_all_submoves"><code class="name flex">
+<span>def <span class="ident">get_all_submoves</span></span>(<span>game_state, pick)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function that returns all the valid moves depending on the stage of the turn defined by pick</p>
+<p>pick &ndash; boolean, if it's time to pick a piece, True. If it's time to put a piece on the game_board, False
+game_state &ndash; a tuple of three elements :
+- [0] the game_board, a Board object that holds the current played pieces
+- [1] the storage_board, a Board object that holds the pieces available to pick
+- [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+on the storage_board. This is the piece that has to be put on the game_board.</p>
+<p>Returns
+a list of tuples that correspond either to game_board coordinates if pick == False, or to a set of
+storage_board coordinates if pick == True</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_submoves(game_state, pick):
+    &#39;&#39;&#39;
+    Function that returns all the valid moves depending on the stage of the turn defined by pick
+
+    pick -- boolean, if it&#39;s time to pick a piece, True. If it&#39;s time to put a piece on the game_board, False
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    a list of tuples that correspond either to game_board coordinates if pick == False, or to a set of
+    storage_board coordinates if pick == True
+    &#39;&#39;&#39;
+    if pick:
+        valid_moves = game_state[1].get_valid_moves()  # built-in method to get the available pieces on the storage_board
+        #  the current selected_piece is removed from the valid pieces to pick as it will be played on the game_board
+        valid_moves.remove(game_state[2])
+        return valid_moves  # all the moves possible
+    else:
+        return game_state[0].get_valid_moves()  # built-in method to get the available pieces on the game_board</code></pre>
+</details>
+</dd>
+<dt id="src.quarto.players.minimax.heuristic"><code class="name flex">
+<span>def <span class="ident">heuristic</span></span>(<span>game_state)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Heuristic function for the level 3 and 4 AIs. The return values can range from 0 to 7 depending on the number
+of lines that result in a win if the right piece is put during the next turn (it can range from 0 to 7).</p>
+<p>game_state &ndash; a tuple of three elements :
+- [0] the game_board, a Board object that holds the current played pieces
+- [1] the storage_board, a Board object that holds the pieces available to pick
+- [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+on the storage_board. This is the piece that has to be put on the game_board.</p>
+<p>Returns
+an integer between 0 and 7</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def heuristic(game_state):
+    &#39;&#39;&#39;
+    Heuristic function for the level 3 and 4 AIs. The return values can range from 0 to 7 depending on the number
+    of lines that result in a win if the right piece is put during the next turn (it can range from 0 to 7).
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    an integer between 0 and 7
+    &#39;&#39;&#39;
+
+    h = set()  # heuristics value
+
+    # Rows and columns
+    for col in range(GCOLS):
+        row_line = []
+        col_line = []
+
+        for row in range(GROWS):
+            col_line.append((col, row))
+            row_line.append((row, col))
+
+        h = update_pos_set(game_state[0], row_line, h, game_state[1])
+        h = update_pos_set(game_state[0], col_line, h, game_state[1])
+
+    #  Diagonals
+    top_left_diagonal_line = []
+    top_right_diagonal_line = []
+
+    for col in range(GCOLS):  #  for diagonals
+        top_left_diagonal_line.append((col, col))
+        top_right_diagonal_line.append((GCOLS - col - 1, col))
+
+    h = update_pos_set(game_state[0], top_right_diagonal_line, h, game_state[1])
+    h = update_pos_set(game_state[0], top_left_diagonal_line, h, game_state[1])
+
+    # print(h)
+    return len(h)</code></pre>
+</details>
+</dd>
+<dt id="src.quarto.players.minimax.minimax"><code class="name flex">
+<span>def <span class="ident">minimax</span></span>(<span>game_state, depth: int, max_player: bool, alpha=-inf, beta=inf, verbose=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implementation of the minimax algorithm (negamax variant) with alpha-beta pruning for Quarto! based on
+* <a href="https://github.com/techwithtim/Python-Checkers-AI/blob/master/minimax/algorithm.py">https://github.com/techwithtim/Python-Checkers-AI/blob/master/minimax/algorithm.py</a>
+* <a href="https://github.com/marienfressinaud/AI_quarto">https://github.com/marienfressinaud/AI_quarto</a></p>
+<p>game_state &ndash; a tuple of three elements :
+- [0] the game_board, a Board object that holds the current played pieces
+- [1] the storage_board, a Board object that holds the pieces available to pick
+- [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+on the storage_board. This is the piece that has to be put on the game_board.
+depth &ndash; int that represents the maximum depth we will explore
+max_player &ndash; the player trying to maximize its evaluation, True if maximizing, False if minimizing
+alpha &ndash; initialized to the worst possible evaluation, has to be None if we don't want any pruning
+beta &ndash; initialized to the best possible evaluation, has to be None if we don't want any pruning
+verbose &ndash; if you want to see the different states being evaluated</p>
+<p>Returns
+a tuple that contains :
+[0] the evaluation of the child (between -9 for a loss, and 9 for a win)
+[1] the new game_state</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def minimax(game_state, depth: int, max_player: bool, alpha=float(&#39;-inf&#39;), beta=float(&#39;inf&#39;), verbose=True):  # alpha=float(&#39;-inf&#39;), beta=float(&#39;inf&#39;), verbose=True):
+    &#39;&#39;&#39;
+    Implementation of the minimax algorithm (negamax variant) with alpha-beta pruning for Quarto! based on
+     * https://github.com/techwithtim/Python-Checkers-AI/blob/master/minimax/algorithm.py
+     * https://github.com/marienfressinaud/AI_quarto
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+    depth -- int that represents the maximum depth we will explore
+    max_player -- the player trying to maximize its evaluation, True if maximizing, False if minimizing
+    alpha -- initialized to the worst possible evaluation, has to be None if we don&#39;t want any pruning
+    beta -- initialized to the best possible evaluation, has to be None if we don&#39;t want any pruning
+    verbose -- if you want to see the different states being evaluated
+
+    Returns
+    a tuple that contains :
+    [0] the evaluation of the child (between -9 for a loss, and 9 for a win)
+    [1] the new game_state
+    &#39;&#39;&#39;
+
+    if verbose:
+        print(&#34;\n\n&#34;, &#34;\t&#34; * abs(2 - depth), &#34;ENTERING MINIMAX DEPTH&#34;, depth, &#34;MAX =&#34;, max_player)
+        print(&#34;\t&#34; * abs(2 - depth), &#34;Game State:&#34;)
+        print(game_state[0].display(depth))
+        print(game_state[1].display(depth))
+        print(&#34;\t&#34; * abs(2 - depth), &#34;Selected_piece:&#34; + str(game_state[2]))
+
+    # Terminal state or max depth reached
+    if depth == 0 or game_state[0].winner():
+        if verbose:
+            print(&#34;\t&#34; * abs(2 - depth), &#34;State_eval:&#34;, state_eval(game_state), &#34;\n\n&#34;)
+        return state_eval(game_state) * (-1 if max_player else 1), game_state  # we return the evaluation of the child and the child itself
+        # FIXME: this line is the most unconventional one. But it also makes sense: without it, winning would be as
+        # rewarding as losing
+
+    best_move = None  #  instanciate the best move to none
+
+    # If we are trying to maximize the evaluation
+    if max_player:
+        max_eval = float(&#39;-inf&#39;)  #  we want to find the highest evaluation that can be obtained from this game_state
+        for child in get_all_possible_states(game_state):  #  we get all the positions in which we can put the current piece
+            evaluation = minimax(child, depth - 1, False, alpha, beta)[0]  # the evaluation is at index 0
+            max_eval = max(max_eval, evaluation)
+
+            if max_eval == evaluation:
+                if verbose:
+                    print(&#34;\t&#34; * abs(3 - depth), &#34;max_evaluation updated:&#34;, max_eval)
+                best_move = child  # we consider moves as a tuple
+
+            #  Pruning
+            if alpha and beta:
+                alpha = max(alpha, max_eval)
+                if verbose:
+                    print(&#34;\t&#34; * abs(3 - depth), &#34;alpha =&#34;, alpha, &#34;beta =&#34;, beta)
+                if beta &lt;= alpha:  # if beta is inferior, that means that there was a better option avaiable before
+                    break
+
+            # Some debugging
+            if verbose:
+                print(&#34;\t&#34; * abs(3 - depth), &#34;evaluation &#34;, evaluation)
+
+        return max_eval, best_move
+
+    # Or if we are trying to minimize the evaluation
+    else:
+        min_eval = float(&#39;inf&#39;)  #  we want to find the lowest evaluation that can be obtained from this game_state
+        for child in get_all_possible_states(game_state):
+            evaluation = minimax(child, depth - 1, True, alpha, beta)[0]  #  here, we add a minus sign for the negamax variant
+            min_eval = min(min_eval, evaluation)  # basically the same as in the max_player condition block, but with the minimum
+
+            # Assigning the new value
+            if min_eval == evaluation:
+                if verbose:
+                    print(&#34;\t&#34; * abs(3 - depth), &#34;min_evaluation updated:&#34;, min_eval)
+                best_move = child  # we consider moves as a tuple
+
+            # Pruning
+            if alpha and beta:
+                beta = min(beta, min_eval)
+                if verbose:
+                    print(&#34;\t&#34; * abs(3 - depth), &#34;alpha =&#34;, alpha, &#34;beta =&#34;, beta)
+                if beta &lt;= alpha:
+                    break
+
+            # Some debugging
+            if verbose:
+                print(&#34;\t&#34; * abs(3 - depth), &#34;evaluation &#34;, evaluation)
+
+        return min_eval, best_move</code></pre>
+</details>
+</dd>
+<dt id="src.quarto.players.minimax.simulate_move"><code class="name flex">
+<span>def <span class="ident">simulate_move</span></span>(<span>game_state, position_played, piece_picked)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function that simulates a move, i.e. that takes as input a game_state, a position played for the current selected_piece
+and a new picked piece, and makes a new game_state by playing the move.</p>
+<p>game_state &ndash; a tuple of three elements :
+- [0] the game_board, a Board object that holds the current played pieces
+- [1] the storage_board, a Board object that holds the pieces available to pick
+- [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+on the storage_board. This is the piece that has to be put on the game_board.
+position_played &ndash; a tuple of (x, y) coordinates that correspond to where we want to put the piece on the game_board
+piece_picked &ndash; a tuple of (x, y) coordinates that correspond to where we want to take the piece from the storage_board</p>
+<p>Returns
+the game_state after the specified move</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def simulate_move(game_state, position_played, piece_picked):
+    &#39;&#39;&#39;
+    Function that simulates a move, i.e. that takes as input a game_state, a position played for the current selected_piece
+    and a new picked piece, and makes a new game_state by playing the move.
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+    position_played -- a tuple of (x, y) coordinates that correspond to where we want to put the piece on the game_board
+    piece_picked -- a tuple of (x, y) coordinates that correspond to where we want to take the piece from the storage_board
+
+    Returns
+    the game_state after the specified move
+    &#39;&#39;&#39;
+    game_board, game_storage, selected_piece_coor = game_state
+    selected_piece = game_storage.board[selected_piece_coor[0]][selected_piece_coor[1]]
+    game_storage.board[selected_piece_coor[0]][selected_piece_coor[1]] = 0
+    game_board.put_piece(selected_piece, position_played[0], position_played[1])
+
+    return game_state[0], game_state[1], piece_picked</code></pre>
+</details>
+</dd>
+<dt id="src.quarto.players.minimax.state_eval"><code class="name flex">
+<span>def <span class="ident">state_eval</span></span>(<span>game_state)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the evaluation of the state of the game. The value can range from 0 (a draw) to 9 (a win)
+1 signifies that there is no win opportunity for the player that is gonna play next, whereas 8 means
+that there is 7 win opportunities (the maximum you can get)</p>
+<p>game_state &ndash; a tuple of three elements :
+- [0] the game_board, a Board object that holds the current played pieces
+- [1] the storage_board, a Board object that holds the pieces available to pick
+- [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+on the storage_board. This is the piece that has to be put on the game_board.</p>
+<p>Returns
+an integer between 0 and 9</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def state_eval(game_state):
+    &#39;&#39;&#39;
+    Computes the evaluation of the state of the game. The value can range from 0 (a draw) to 9 (a win)
+    1 signifies that there is no win opportunity for the player that is gonna play next, whereas 8 means
+    that there is 7 win opportunities (the maximum you can get)
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    an integer between 0 and 9
+    &#39;&#39;&#39;
+    if game_state[0].winner():
+        return EVAL_WIN
+    elif game_state[0].is_full():
+        return EVAL_TIE
+    else:
+        return 0  # FIXME: the heuristic doesn&#39;t work</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.quarto.players" href="index.html">src.quarto.players</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="src.quarto.players.minimax.get_all_possible_states" href="#src.quarto.players.minimax.get_all_possible_states">get_all_possible_states</a></code></li>
+<li><code><a title="src.quarto.players.minimax.get_all_submoves" href="#src.quarto.players.minimax.get_all_submoves">get_all_submoves</a></code></li>
+<li><code><a title="src.quarto.players.minimax.heuristic" href="#src.quarto.players.minimax.heuristic">heuristic</a></code></li>
+<li><code><a title="src.quarto.players.minimax.minimax" href="#src.quarto.players.minimax.minimax">minimax</a></code></li>
+<li><code><a title="src.quarto.players.minimax.simulate_move" href="#src.quarto.players.minimax.simulate_move">simulate_move</a></code></li>
+<li><code><a title="src.quarto.players.minimax.state_eval" href="#src.quarto.players.minimax.state_eval">state_eval</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

@@ -10,7 +10,7 @@ import quarto.constants
 
 class Coloration(Enum):
     """
-    Enumeration for the 2 main colors, brown and beige
+    Enumeration for the 2 play colors, brown and beige
     """
     BEIGE = quarto.constants.BEIGE
     BROWN = quarto.constants.BROWN

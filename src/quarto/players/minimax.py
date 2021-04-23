@@ -15,7 +15,7 @@ EVAL_WIN = 9
 MAX_DEPTH = 4
 
 
-def minimax(game_state, depth: int, max_player: bool, alpha=float('-inf'), beta=float('inf'), verbose=False):  # alpha=float('-inf'), beta=float('inf'), verbose=True):
+def minimax(game_state, depth: int, max_player: bool, alpha=float('-inf'), beta=float('inf'), verbose=True):  # alpha=float('-inf'), beta=float('inf'), verbose=True):
     '''
     Implementation of the minimax algorithm (negamax variant) with alpha-beta pruning for Quarto! based on
      * https://github.com/techwithtim/Python-Checkers-AI/blob/master/minimax/algorithm.py
@@ -28,8 +28,8 @@ def minimax(game_state, depth: int, max_player: bool, alpha=float('-inf'), beta=
         on the storage_board. This is the piece that has to be put on the game_board.
     depth -- int that represents the maximum depth we will explore
     max_player -- the player trying to maximize its evaluation, True if maximizing, False if minimizing
-    alpha -- initialized to the worst possible evaluation
-    beta -- initialized to the best possible evaluation
+    alpha -- initialized to the worst possible evaluation, has to be None if we don't want any pruning
+    beta -- initialized to the best possible evaluation, has to be None if we don't want any pruning
     verbose -- if you want to see the different states being evaluated
 
     Returns
@@ -129,7 +129,7 @@ def state_eval(game_state):
     elif game_state[0].is_full():
         return EVAL_TIE
     else:
-        return 0
+        return 0  # FIXME: the heuristic doesn't work
         # return heuristic(game_state) + 1  #  the +1 is here to let only the TIE be of 0 value
 
 

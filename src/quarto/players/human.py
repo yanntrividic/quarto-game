@@ -4,8 +4,6 @@ Created on Mar 21, 2021
 @author: yann
 '''
 
-from .ai import heuristic
-
 from .player import Player
 
 
