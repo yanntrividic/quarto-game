@@ -15,7 +15,7 @@ EVAL_WIN = 9
 MAX_DEPTH = 4
 
 
-def minimax(game_state, depth: int, max_player: bool, alpha=None, beta=None, verbose=True):  # alpha=float('-inf'), beta=float('inf'), verbose=True):
+def minimax(game_state, depth: int, max_player: bool, alpha=float('-inf'), beta=float('inf'), verbose=False):  # alpha=float('-inf'), beta=float('inf'), verbose=True):
     '''
     Implementation of the minimax algorithm (negamax variant) with alpha-beta pruning for Quarto! based on
      * https://github.com/techwithtim/Python-Checkers-AI/blob/master/minimax/algorithm.py
@@ -50,6 +50,8 @@ def minimax(game_state, depth: int, max_player: bool, alpha=None, beta=None, ver
         if verbose:
             print("\t" * abs(2 - depth), "State_eval:", state_eval(game_state), "\n\n")
         return state_eval(game_state) * (-1 if max_player else 1), game_state  # we return the evaluation of the child and the child itself
+        # FIXME: this line is the most unconventional one. But it also makes sense: without it, winning would be as
+        # rewarding as losing
 
     best_move = None  #  instanciate the best move to none
 
@@ -59,18 +61,23 @@ def minimax(game_state, depth: int, max_player: bool, alpha=None, beta=None, ver
         for child in get_all_possible_states(game_state):  #  we get all the positions in which we can put the current piece
             evaluation = minimax(child, depth - 1, False, alpha, beta)[0]  # the evaluation is at index 0
             max_eval = max(max_eval, evaluation)
-            if alpha and beta:
-                alpha = max_eval
-                if verbose:
-                    print("\t" * abs(3 - depth), "alpha =", alpha, "beta =", beta)
-                if beta <= alpha:  # if beta is inferior, that means that there was a better option avaiable before
-                    break
-            if verbose:
-                print("\t" * abs(3 - depth), "evaluation ", evaluation)
+
             if max_eval == evaluation:
                 if verbose:
                     print("\t" * abs(3 - depth), "max_evaluation updated:", max_eval)
                 best_move = child  # we consider moves as a tuple
+
+            #  Pruning
+            if alpha and beta:
+                alpha = max(alpha, max_eval)
+                if verbose:
+                    print("\t" * abs(3 - depth), "alpha =", alpha, "beta =", beta)
+                if beta <= alpha:  # if beta is inferior, that means that there was a better option avaiable before
+                    break
+
+            # Some debugging
+            if verbose:
+                print("\t" * abs(3 - depth), "evaluation ", evaluation)
 
         return max_eval, best_move
 
@@ -80,18 +87,24 @@ def minimax(game_state, depth: int, max_player: bool, alpha=None, beta=None, ver
         for child in get_all_possible_states(game_state):
             evaluation = minimax(child, depth - 1, True, alpha, beta)[0]  #  here, we add a minus sign for the negamax variant
             min_eval = min(min_eval, evaluation)  # basically the same as in the max_player condition block, but with the minimum
-            if alpha and beta:
-                beta = min_eval
-                if verbose:
-                    print("\t" * abs(3 - depth), "alpha =", alpha, "beta =", beta)
-                if beta <= alpha:
-                    break
-            if verbose:
-                print("\t" * abs(3 - depth), "evaluation ", evaluation)
+
+            # Assigning the new value
             if min_eval == evaluation:
                 if verbose:
                     print("\t" * abs(3 - depth), "min_evaluation updated:", min_eval)
                 best_move = child  # we consider moves as a tuple
+
+            # Pruning
+            if alpha and beta:
+                beta = min(beta, min_eval)
+                if verbose:
+                    print("\t" * abs(3 - depth), "alpha =", alpha, "beta =", beta)
+                if beta <= alpha:
+                    break
+
+            # Some debugging
+            if verbose:
+                print("\t" * abs(3 - depth), "evaluation ", evaluation)
 
         return min_eval, best_move
 
@@ -116,7 +129,8 @@ def state_eval(game_state):
     elif game_state[0].is_full():
         return EVAL_TIE
     else:
-        return heuristic(game_state) + 1  #  the +1 is here to let only the TIE be of 0 value
+        return 0
+        # return heuristic(game_state) + 1  #  the +1 is here to let only the TIE be of 0 value
 
 
 def heuristic(game_state):

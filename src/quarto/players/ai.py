@@ -48,7 +48,6 @@ class AI_level1(Player):
             game.valid_moves = []
 
         game.end_turn(selected_piece)
-        sleep(1)
 
         return True
 
@@ -99,11 +98,9 @@ class AI_level2(Player):
                 rand_move = get_random_move(game, True)
                 game.move(rand_move[0], rand_move[1])
 
-            game.selected_piece = None
             game.valid_moves = []
 
         game.end_turn(selected_piece)
-        sleep(1)
 
         return True
 
@@ -130,11 +127,15 @@ class AI_level3(Player):
         Constructor
         '''
         self.__name__ = name
-        self.depth = 1
+        self.depth = 2
 
-        self.LEVEL_1_DEPTH_UNTIL = 15
-        self.LEVEL_2_DEPTH_UNTIL = 8
-        self.LEVEL_3_DEPTH_UNTIL = 5
+        self.DEPTH_2_UNTIL = (2, 7)  # (depth, nb of turns left)
+        self.DEPTH_3_UNTIL = (3, 4)  # (depth, nb of turns left)
+        self.DEPTH_4_UNTIL = (4, 0)
+
+        self.depths = [self.DEPTH_2_UNTIL,  # (depth, nb of turns left)]
+                       self.DEPTH_3_UNTIL,
+                       self.DEPTH_4_UNTIL]
 
     def select(self, game, row, col):
         '''
@@ -147,17 +148,18 @@ class AI_level3(Player):
         if len(game.game_board.get_valid_moves()) == SCOLS * SROWS and game.pick:
             move = get_random_move(game)
             print(move)
-            game.selected_piece = game.storage_board.get_piece(move[0], move[1])
+            # game.selected_piece = game.storage_board.get_piece(move[0], move[1])
             game.valid_moves = game.game_board.get_valid_moves()
             game.end_turn(game.selected_piece)
             return True
 
         game_state = (game.game_board, game.storage_board, get_coor_selected_piece(game.storage_board, game.selected_piece))
         result = minimax(game_state, self.depth, True)
-        game.game_board, game.storage_board, selected_piece_coor = result[1]
-        #  the position played and the picked piece are both returned at the same time
 
-        print(game.game_board, game.storage_board, "\n", selected_piece_coor)
+        if result[1]:  # if none, that means there is no piece left
+            game.game_board, game.storage_board, selected_piece_coor = result[1]
+            #  the position played and the picked piece are both returned at the same time
+            print(game.game_board, game.storage_board, "\n", selected_piece_coor)
 
         game.end_turn(None)
 
@@ -173,12 +175,14 @@ class AI_level3(Player):
     def update_depth(self, game):
         nb_turns = len(game.game_board.get_valid_moves())
 
-        if nb_turns > self.LEVEL_1_DEPTH_UNTIL:
-            self.depth = 1
-        elif nb_turns > self.LEVEL_2_DEPTH_UNTIL:
-            self.depth = 2
-        elif nb_turns > self.LEVEL_3_DEPTH_UNTIL:
-            self.depth = 3
+        print("nb_turns =", nb_turns)
+        if nb_turns > self.DEPTH_2_UNTIL[1]:
+            self.depth = self.DEPTH_2_UNTIL[0]
+        elif nb_turns > self.DEPTH_3_UNTIL[1]:
+            self.depth = self.DEPTH_3_UNTIL[0]
+        elif nb_turns > self.DEPTH_4_UNTIL[1]:
+            self.depth = self.DEPTH_4_UNTIL[0]
+        print("depth =", self.depth)
 
 
 class AI_level4(AI_level2):
@@ -194,9 +198,8 @@ class AI_level4(AI_level2):
 
         self.level2 = True
         self.depth = 2
-        self.AI_LEVEL2_UNTIL = 12
-        self.LEVEL_2_DEPTH_UNTIL = 8
-        self.LEVEL_3_DEPTH_UNTIL = 5
+        self.AI_LEVEL2_UNTIL = 10
+        self.DEPTH_2_UNTIL = 5
 
     def select(self, game, row, col):
         self.update_depth(game)
@@ -225,10 +228,11 @@ class AI_level4(AI_level2):
         game_state = (game.game_board, game.storage_board, get_coor_selected_piece(game.storage_board, game.selected_piece))
         print("GAME SELECTED PIECE =", game.selected_piece)
         result = minimax(game_state, self.depth, True)
-        game.game_board, game.storage_board, selected_piece_coor = result[1]
-        #  the position played and the picked piece are both returned at the same time
 
-        print(game.game_board, game.storage_board, "\n", selected_piece_coor)
+        if result[1]:  # if none, that means there is no piece left
+            game.game_board, game.storage_board, selected_piece_coor = result[1]
+            #  the position played and the picked piece are both returned at the same time
+            print(game.game_board, game.storage_board, "\n", selected_piece_coor)
 
         game.end_turn(None)
 
@@ -246,7 +250,6 @@ class AI_level4(AI_level2):
         print("nb_turns =", nb_turns)
         if nb_turns < self.AI_LEVEL2_UNTIL:
             self.level2 = False
-        elif nb_turns < self.LEVEL_2_DEPTH_UNTIL:
-            self.depth = 2
-        elif nb_turns < self.LEVEL_3_DEPTH_UNTIL:
+        elif nb_turns < self.DEPTH_2_UNTIL:
             self.depth = 3
+        print("depth =", self.depth)
