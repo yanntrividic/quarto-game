@@ -7,31 +7,32 @@ Created on Apr 20, 2021
 from copy import deepcopy
 
 from ..constants import GROWS, GCOLS
-from .utils import update_pos_set, get_coor_selected_piece
+from .utils import update_pos_set
 
-EVAL_LOSS = -1
-EVAL_TIE = 8  #  this draw value only matters in the endgame, where the heuristic doesn't matter anymore
+EVAL_TIE = 0  #  this draw value only matters in the endgame, where the heuristic doesn't matter anymore
 EVAL_WIN = 9
 
 MAX_DEPTH = 4
 
 
-def minimax(game_state, depth: int, max_player: bool, verbose=False):
+def minimax(game_state, depth: int, max_player: bool, verbose=True):
     '''
-    Implementation of the minimax algorithm based on:
+    Implementation of the minimax algorithm (negamax variant) for Quarto! based on
      * https://github.com/techwithtim/Python-Checkers-AI/blob/master/minimax/algorithm.py
      * https://github.com/marienfressinaud/AI_quarto
 
-    position -- a (x, y) coordinates to evaluate
-    game -- a Game object that contains the current state of the game (a storage board and a game board)
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
     depth -- int that represents the maximum depth we will explore
     max_player -- the player trying to maximize its evaluation, True if maximizing, False if minimizing
-    playing_player -- the actual Player object for which we run the calculation
 
-    returns --
-    A move, i.e. a tuple of (x, y) coordinates.
-    If pick: the move is the cell from the storage board in which the piece to select is.
-    If not pick: the move is the cell from the game board in which to put the selected piece in.
+    Returns
+    a tuple that contains :
+    [0] the evaluation of the move (between -9 for a loss, and 9 for a win)
+    [1] the new game_state
     '''
 
     if verbose:
@@ -45,44 +46,56 @@ def minimax(game_state, depth: int, max_player: bool, verbose=False):
     if depth == 0 or game_state[0].winner():
         if verbose:
             print("\t" * abs(2 - depth), "State_eval:", state_eval(game_state), "\n\n")
-        return state_eval(game_state), game_state  # * (-1 if max_player else 1) ??, move
+        return state_eval(game_state), game_state  # we return the evaluation of the move and the move itself
 
-    if max_player:  #  meaning we are trying to maximize the evaluation
+    # If we are trying to maximize the evaluation
+    if max_player:
         max_eval = float('-inf')
         best_move = None
-        for move in get_all_moves(game_state):  #  we get all the positions in which we can put the current piece
-            # TODO: we might have to store the original game&storage boards somewhere before doing that
-
-            evaluation = minimax(move, depth - 1, False)[0]  # we get the evaluation at index 0
+        for move in get_all_possible_states(game_state):  #  we get all the positions in which we can put the current piece
+            evaluation = minimax(move, depth - 1, False)[0]  # the evaluation is at index 0
             max_eval = max(max_eval, evaluation)
             if verbose:
-                print("\t" * abs(2 - depth), "evaluation ", evaluation)
+                print("\t" * abs(3 - depth), "evaluation ", evaluation)
             if max_eval == evaluation:
                 if verbose:
-                    print("\t" * abs(2 - depth), "max_evaluation updated:", max_eval)
+                    print("\t" * abs(3 - depth), "max_evaluation updated:", max_eval)
                 best_move = move  # we consider moves as a tuple
 
         return max_eval, best_move
 
+    # Or if we are trying to minimize the evaluation
     else:
         min_eval = float('inf')
         best_move = None
-        for move in get_all_moves(game_state):  #  we get all the positions in which we can put the current piece
-            # TODO: we might have to store the original game&storage boards somewhere before doing that
-
+        for move in get_all_possible_states(game_state):  #  we get all the positions in which we can put the current piece
             evaluation = -minimax(move, depth - 1, True)[0]  # we get the evaluation at index 0
             min_eval = min(min_eval, evaluation)
             if verbose:
-                print("\t" * abs(2 - depth), "evaluation ", evaluation)
+                print("\t" * abs(3 - depth), "evaluation ", evaluation)
             if min_eval == evaluation:
                 if verbose:
-                    print("\t" * abs(2 - depth), "min_evaluation updated:", min_eval)
+                    print("\t" * abs(3 - depth), "min_evaluation updated:", min_eval)
                 best_move = move  # we consider moves as a tuple
 
         return min_eval, best_move
 
 
 def state_eval(game_state):
+    '''
+    Computes the evaluation of the state of the game. The value can range from 0 (a draw) to 9 (a win)
+    1 signifies that there is no win opportunity for the player that is gonna play next, whereas 8 means
+    that there is 7 win opportunities (the maximum you can get)
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    an integer between 0 and 9
+    '''
     if game_state[0].winner():
         return EVAL_WIN
     elif game_state[0].is_full():
@@ -93,10 +106,17 @@ def state_eval(game_state):
 
 def heuristic(game_state):
     '''
-    Heuristic function for the level 3 and 4 AIs. The return values can range from 0 to 7 depending on the number
+    Heuristic function for the level 3 and 4 AIs. The return values can range from 1 to 8 depending on the number
     of lines that result in a win if the right piece is put during the next turn.
 
-    game -- a Game object at the current state of the game
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    an integer between 1 and 8
     '''
 
     h = set()  # heuristics value
@@ -125,48 +145,72 @@ def heuristic(game_state):
     h = update_pos_set(game_state[0], top_left_diagonal_line, h, game_state[1])
 
     # print(h)
-    return len(h)
+    return len(h) + 1  #  the +1 is here to let only the TIE be of 0 value
+
+
+def get_all_possible_states(game_state):
+    '''
+    Function that generates a list of possible states from the given game_state
+
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    a list of possible game_state (as described higher) after a move is made.
+    '''
+    possible_states_after_move = []
+
+    for position_played in get_all_submoves(game_state, False):  #  for each cell where we can put the selected piece
+        for piece_picked in get_all_submoves(game_state, True):  #  and each available piece left
+            temp_game_state = deepcopy(game_state)  #  we copy the current game_state
+            new_game_state = simulate_move(temp_game_state, position_played, piece_picked)  #  and play the move given
+            possible_states_after_move.append(new_game_state)
+
+    return possible_states_after_move
 
 
 def get_all_submoves(game_state, pick):
-    #  TODO: verify if the return value is alright, I have a doubt
+    '''
+    Function that returns all the valid moves depending on the stage of the turn defined by pick
+
+    pick -- boolean, if it's time to pick a piece, True. If it's time to put a piece on the game_board, False
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+
+    Returns
+    a list of tuples that correspond either to game_board coordinates if pick == False, or to a set of
+    storage_board coordinates if pick == True
+    '''
     if pick:
-        valid_moves = game_state[1].get_valid_moves()
-
-        # print("piece to remove:", game.selected_piece, "coor_selected_piece_to_remove", coor_selected_piece_to_revove)
-       # print("REMOVED PIECE: ", game_state[2])
+        valid_moves = game_state[1].get_valid_moves()  # built-in method to get the available pieces on the storage_board
+        #  the current selected_piece is removed from the valid pieces to pick as it will be played on the game_board
         valid_moves.remove(game_state[2])
-
-        # print("valid_moves atfer removal:", valid_moves)
-
         return valid_moves  # all the moves possible
     else:
-        # print("get_all_moves game_board: ", game.game_board.get_valid_moves())
-        return game_state[0].get_valid_moves()
-
-
-def get_all_moves(game_state):
-    moves = []
-
-    # print("get_all_submoves position:", get_all_submoves(game_state, False))
-    #  print("get_all_submoves piece:", get_all_submoves(game_state, True))
-    for position_played in get_all_submoves(game_state, False):
-        for piece_picked in get_all_submoves(game_state, True):
-            temp_game_state = deepcopy(game_state)
-            new_game_state = simulate_move(temp_game_state, position_played, piece_picked)
-            moves.append(new_game_state)
-
-    return moves
+        return game_state[0].get_valid_moves()  # built-in method to get the available pieces on the game_board
 
 
 def simulate_move(game_state, position_played, piece_picked):
     '''
-    Function that simulates a move, i.e. that generates a new storage board and a new game board by taking the
-    position_picked_piece from the game board and putting in the position_played.
+    Function that simulates a move, i.e. that takes as input a game_state, a position played for the current selected_piece
+    and a new picked piece, and makes a new game_state by playing the move.
 
-    position_picked_piece -- a tuple of (x, y) coordinates tuple on the storage board
-    game -- a Game object that will be updated with new boards
-    position -- the position with which we need to deal in order to simulate the move
+    game_state -- a tuple of three elements :
+        - [0] the game_board, a Board object that holds the current played pieces
+        - [1] the storage_board, a Board object that holds the pieces available to pick
+        - [2] the selected_piece coordinates, a tuple of (x, y) coordinates that correspond to an available piece
+        on the storage_board. This is the piece that has to be put on the game_board.
+    position_played -- a tuple of (x, y) coordinates that correspond to where we want to put the piece on the game_board
+    piece_picked -- a tuple of (x, y) coordinates that correspond to where we want to take the piece from the storage_board
+
+    Returns
+    the game_state after the specified move
     '''
     game_board, game_storage, selected_piece_coor = game_state
     selected_piece = game_storage.board[selected_piece_coor[0]][selected_piece_coor[1]]
