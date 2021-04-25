@@ -4,8 +4,11 @@
 Elie Duboux  
 Yann Trividic
 
-**Description**
-A Python implementation of the board game *Quarto!* with an artificial intelligence playing against the user. This program is partly based on the work of Mohrmann et al. (2013) and on the video tutorial of the YouTube channel *Tech with Tim*. This project was developed in the context of Elise Bonzon's Artificial Intelligence course at the Université de Paris. 
+**Description**  
+This program is a Python implementation of the board game *Quarto!* with an artificial intelligence based on the minimax algorithm. This program is partly based on the work of Mohrmann et al. (2013) and on the video tutorial of the YouTube channel *Tech with Tim*. This project was developed in the context of Elise Bonzon's Artificial Intelligence course at the Université de Paris. 
+
+![alt text](https://raw.githubusercontent.com/yanntrividic/quarto-game/main/mainwindow.png)
+
 
 ## Prerequisites
 
