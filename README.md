@@ -4,8 +4,31 @@
 Elie Duboux  
 Yann Trividic
 
-A Python implementation of the board game *Quarto!* with an artificial intelligence playing against the user. This program is partly based on the work of Mohrmann et al. (2013) and on the video tutorial of the YouTube channel *Tech with Tim*
+**Description**
+A Python implementation of the board game *Quarto!* with an artificial intelligence playing against the user. This program is partly based on the work of Mohrmann et al. (2013) and on the video tutorial of the YouTube channel *Tech with Tim*. This project was developed in the context of Elise Bonzon's Artificial Intelligence course at the Université de Paris. 
 
+## Prerequisites
+
+You need to have a Python3.x version installed on your computer with the `pygame` module. You can install `pygame` by running one of the following commands:
+
+    pip install pygame  
+    pip3 install pygame  
+    python3.x -m pip install pygame  
+
+You will need to replace the `x` by your Python version number.
+
+After filling this requirement, you can start the program by opening a terminal in the `src` folder and run:
+
+    python play.py  
+    python3.x play.py  
+
+The last command is needed if your default version is not a 3.x version. 
+You will need to replace the `x` by your Python version number.
+
+
+## User Manuel and Project Report
+
+A user manual, as weel as a project report, can be found in the `project_report_fr.pdf` file (in french).
 
 ## References
 
