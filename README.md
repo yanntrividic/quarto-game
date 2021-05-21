@@ -10,7 +10,7 @@ This program is a Python implementation of the board game *Quarto!* with an arti
 ![Main window of the game](https://raw.githubusercontent.com/yanntrividic/quarto-game/main/mainwindow.png)
 
 
-## Prerequisites
+## Prerequisites
 
 You need to have a Python3.x version installed on your computer with the `pygame` module. You can install `pygame` by running one of the following commands:
 
